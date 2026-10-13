@@ -3,7 +3,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildModel, AXIS_Y, PIPE_R } from './model.js';
 import { buildFlow } from './flow.js';
 import { stateAt, durationOf, EXPLODE_ORDER, activeMover, ease, TIMING } from './timeline.js';
-import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS } from './config.js';
+import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS, INSPECTION_STEPS } from './config.js';
 
 const W = 1920, H = 1080;
 const canvas = document.getElementById('c');
@@ -55,6 +55,22 @@ function collectOverlay(g) {
 collectOverlay(groups.guard);
 collectOverlay(groups.up);
 collectOverlay(groups.lo);
+
+// Per-group materials for the Clip 4 focus highlight (shared cache must not leak a highlight).
+const focusMats = {};
+for (const S of INSPECTION_STEPS) {
+  focusMats[S.k] = [];
+  groups[S.k].traverse((o) => {
+    if (o.isMesh) { o.material = o.material.clone(); focusMats[S.k].push(o.material); }
+  });
+}
+const HIGHLIGHT = new THREE.Color(0xffffff); // neutral lift: preserves the supplied hues
+
+// Clip 4 inspection card, leader line and progress strip.
+const card = document.getElementById('card');
+const leader = document.getElementById('leader');
+const progress = document.getElementById('progress');
+progress.innerHTML = INSPECTION_STEPS.map((S) => `<div class="step" style="--c:${S.color}"><span class="tag" style="background:${S.color}">${S.tag}</span>${S.title}<span class="tick">✓</span></div>`).join('');
 
 // ------------------------------------------------------------------ overlays
 const labelsEl = document.getElementById('labels');
@@ -132,6 +148,11 @@ function applyState(st, doRender = true) {
   }
   flow.update(st.t, st.flowOpacity, st.flowRunning);
 
+  for (const S of INSPECTION_STEPS) {
+    const a = st.focus === S.k ? 0.22 * st.focusAmount : 0;
+    for (const m of focusMats[S.k]) { m.emissive.copy(HIGHLIGHT); m.emissiveIntensity = a; }
+  }
+
   // HUD
   document.getElementById('clipname').textContent = CLIPS[st.clip].name;
   document.getElementById('status').textContent = st.status;
@@ -145,6 +166,8 @@ function applyState(st, doRender = true) {
       extra.push('Shaft rotation not shown: approved rotation direction and viewing convention have not been supplied.');
     }
     extra.push('Flow colours/arrows are a conceptual overlay; pipe colours do not prove fluid temperatures. No operating values shown.');
+  } else if (st.clip === 4) {
+    extra.push('Text from the reference illustration. No limits, values or OEM inspection intervals are supplied or implied.');
   } else {
     extra.push('Unverified from the image: pump type & internals, rotation direction, port duties, cooler passages, OEM sequence, operating values.');
   }
@@ -160,7 +183,38 @@ function applyState(st, doRender = true) {
     const show = isMain || anyExploded || L.k === mover;
     place(L.el, p, show);
     L.el.classList.toggle('active', L.k === mover);
+    const focused = st.clip === 4 && L.k === st.focus;
+    L.el.classList.toggle('focus', focused);
+    L.el.style.setProperty('--c', L.color);
   }
+  // Clip 4 card + leader line from card to the focused component.
+  const step = st.clip === 4 && st.focus ? INSPECTION_STEPS[st.focusIndex] : null;
+  card.style.display = step ? 'block' : 'none';
+  leader.style.display = 'none'; // leader removed: it crossed other components
+  progress.style.display = st.clip === 4 ? 'flex' : 'none';
+  if (step) {
+    card.style.opacity = st.focusAmount;
+    card.style.setProperty('--c', step.color);
+    card.innerHTML = `<div class="card-h"><span class="tag" style="background:${step.color}">${step.tag}</span>${step.title}</div>
+      <div class="card-k">Function</div><div class="card-v">${step.fn}</div>
+      <div class="card-k">Inspection learning purpose</div><div class="card-v">${step.purpose}</div>`;
+    const L = LABELS.find((x) => x.k === step.k);
+    const p = project(L.anchor);
+    const line = leader.querySelector('line');
+    line.setAttribute('x1', 44 + 600); line.setAttribute('y1', 300);
+    line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
+    line.setAttribute('stroke', step.color);
+    leader.style.opacity = st.focusAmount;
+  }
+  if (st.clip === 4) {
+    progress.querySelectorAll('.step').forEach((el, i) => {
+      el.classList.toggle('done', i < st.completed);
+      el.classList.toggle('now', i === st.focusIndex && st.focus);
+    });
+    const sum = document.getElementById('summary');
+    sum.style.display = st.summary > 0 ? 'block' : 'none';
+    sum.style.opacity = st.summary;
+  } else document.getElementById('summary').style.display = 'none';
   place(notes.pump, project(groups.pump.children.find((c) => c.name === 'Pump_Casing'), 0, -0.95, 0.8), st.clip === 3);
   place(notes.cool, project(groups.cool.children.find((c) => c.name === 'CoolingModule_HeaderBottom'), 0.2, -0.75, 0.8), st.clip === 3);
   place(notes.guard, project(groups.guard.children.find((c) => c.name === 'CouplingGuard_Top'), -1.6, -2.15, 1.6), st.clip === 3 && st.guardOverlay > 0.5);
@@ -262,14 +316,30 @@ window.verify = () => {
   if (anyRotation && !rotationAllowed()) fail('Rotation rendered without an approved direction');
   ok('Directly coupled shafts: identical angle and direction every frame', { rotMismatch, rotationRendered: anyRotation, approvedDirection: TECHNICAL.rotationDirection });
 
-  // 7. Housings, guard, pipes, gauge, cooler, base stationary in Clip 3.
+  // 7. Housings, guard, pipes, gauge, cooler, base stationary in Clips 3 and 4.
   let moved = 0;
-  for (let f = 0; f <= frames3; f++) {
-    applyState(stateAt(3, f / FPS), false);
+  const frames4 = Math.round(durationOf(4) * FPS);
+  const frames34 = [...Array(frames3 + 1).keys()].map((f) => [3, f]).concat([...Array(frames4 + 1).keys()].map((f) => [4, f]));
+  for (const [c, f] of frames34) {
+    applyState(stateAt(c, f / FPS), false);
+    for (const r of rotating) if (r.rotation.x) moved++;
     for (const k of allKeys) if (groups[k].position.distanceTo(home[k]) > 0 || groups[k].rotation.x || groups[k].rotation.y || groups[k].rotation.z) moved++;
   }
   if (moved) fail('A stationary component moved in Clip 3');
-  ok('Stationary parts remain stationary in Clip 3', { violations: moved });
+  ok('Stationary parts remain stationary in Clips 3 and 4 (and no rotation in Clip 4)', { violations: moved });
+
+  // 7b. Clip 4: every inspection step shown once, in order 01..05, no flow or motion.
+  const order = [];
+  let flowShown = 0;
+  for (let f = 0; f <= frames4; f++) {
+    const st = stateAt(4, f / FPS);
+    if (st.focus && order[order.length - 1] !== st.focus) order.push(st.focus);
+    if (st.flowOpacity > 0 || st.flowRunning) flowShown++;
+  }
+  const expected = INSPECTION_STEPS.map((S) => S.k);
+  if (JSON.stringify(order) !== JSON.stringify(expected)) fail('Clip 4 inspection order incorrect: ' + order.join(','));
+  if (flowShown) fail('Flow shown in Clip 4');
+  ok('Clip 4 walkthrough order 01→05, each once; no flow, no motion', { order, flowShown });
 
   // 8. Flow particles: inside pipe bore, monotonic direction, matching reference arrows.
   let outside = 0, reversed = 0;

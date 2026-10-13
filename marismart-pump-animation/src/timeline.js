@@ -2,7 +2,7 @@
 // Clip 2 is computed as the exact time-reverse of Clip 1's movement phase, so
 // every reassembly trajectory is the disassembly trajectory run backwards.
 
-import { CLIPS } from './config.js';
+import { CLIPS, INSPECTION_STEPS } from './config.js';
 
 // Disassembly order: only external subassemblies, translations only.
 export const EXPLODE_ORDER = ['guard', 'gauge', 'up', 'lo', 'motor', 'pump', 'cool'];
@@ -72,12 +72,30 @@ export function stateAt(clip, t) {
     st.shaftsRotating = t >= 2.0; // honoured only if an approved direction is configured
     st.status = 'Operating view (conceptual) — guard installed, shown as transparent teaching overlay';
     st.caption = 'Conceptual circulation — internal flow path requires equipment-specific verification.';
+  } else if (clip === 4) {
+    // Static, assembled, stopped. One component in focus at a time; no motion, no flow.
+    for (const k of EXPLODE_ORDER) st.explode[k] = 0;
+    const i = Math.floor((t - INSPECT_START) / INSPECT_EACH);
+    if (t >= INSPECT_START && i < INSPECTION_STEPS.length) {
+      const local = t - INSPECT_START - i * INSPECT_EACH;
+      st.focus = INSPECTION_STEPS[i].k;
+      st.focusIndex = i;
+      st.focusAmount = Math.min(clamp01(local / 0.4), clamp01((INSPECT_EACH - local) / 0.4));
+    }
+    st.completed = Math.max(0, Math.min(INSPECTION_STEPS.length, Math.floor((t - INSPECT_START) / INSPECT_EACH)));
+    st.summary = t >= INSPECT_END ? clamp01((t - INSPECT_END) / 0.5) : 0;
+    st.status = 'System stopped and isolated (conceptual) — external observation only';
+    st.caption = 'Inspection learning walkthrough — illustrative; not an approved inspection procedure.';
   }
   return st;
 }
+
+const INSPECT_START = 2.5;
+const INSPECT_EACH = 4.6;
+const INSPECT_END = INSPECT_START + INSPECTION_STEPS.length * INSPECT_EACH;
 
 export function durationOf(clip) {
   return CLIPS[clip].duration;
 }
 
-export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START };
+export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START, INSPECT_START, INSPECT_EACH, INSPECT_END };

@@ -19,8 +19,21 @@
   #labels { position:absolute; inset:0; pointer-events:none; }
   .label { position:absolute; transform:translate(-50%,-100%); display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px 12px 6px 6px; font-size:20px; font-weight:600; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,.08); }
   .label.active { outline:3px solid #f08a00; }
+  .label.focus { outline:4px solid var(--c); transform:translate(-50%,-100%) scale(1.15); z-index:2; }
   .tag { color:#fff; border-radius:6px; padding:3px 9px; font-size:18px; font-weight:700; }
   .note { position:absolute; transform:translate(-50%,0); background:#fff8e1; border:1px dashed #b88a00; border-radius:8px; padding:6px 10px; font-size:17px; max-width:330px; white-space:normal; line-height:1.3; }
+  #card { display:none; position:absolute; left:44px; top:150px; width:600px; box-sizing:border-box; background:#fff; border:1px solid var(--line); border-left:8px solid var(--c); border-radius:12px; padding:18px 22px; box-shadow:0 6px 20px rgba(0,0,0,.10); }
+  .card-h { display:flex; align-items:center; gap:12px; font-size:30px; font-weight:700; margin-bottom:12px; }
+  .card-k { font-size:18px; font-weight:700; color:var(--c); margin-top:8px; }
+  .card-v { font-size:22px; line-height:1.35; }
+  #leader { display:none; position:absolute; inset:0; pointer-events:none; }
+  #progress { display:none; position:absolute; right:44px; top:120px; gap:8px; }
+  .step { display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:5px 10px 5px 5px; font-size:16px; font-weight:600; opacity:.6; }
+  .step .tick { color:#2e9b4f; font-weight:800; visibility:hidden; }
+  .step.done { opacity:1; } .step.done .tick { visibility:visible; }
+  .step.now { opacity:1; outline:3px solid var(--c); }
+  #summary { display:none; position:absolute; left:44px; top:150px; width:600px; box-sizing:border-box; background:#fff; border:1px solid var(--line); border-left:8px solid #6a3fb5; border-radius:12px; padding:18px 22px; font-size:22px; line-height:1.4; box-shadow:0 6px 20px rgba(0,0,0,.10); }
+  #summary b { font-size:28px; display:block; margin-bottom:8px; }
   #controls { display:none; position:fixed; left:12px; bottom:12px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px; gap:8px; align-items:center; font-size:14px; z-index:5; }
   body.viewer #controls { display:flex; }
 </style>
@@ -31,7 +44,11 @@
 <body>
 <div id="stage">
   <canvas id="c" width="1920" height="1080"></canvas>
+  <svg id="leader" width="1920" height="1080"><line stroke-width="3" stroke-dasharray="8 6"/></svg>
   <div id="labels"></div>
+  <div id="card"></div>
+  <div id="progress"></div>
+  <div id="summary"><b>Walkthrough complete</b>Each observation links a component's function to the evidence recorded: point, value, unit, time, reference, uncertainty, and the authorised person informed at handover.</div>
   <div id="hud-top">
     <div><div class="eyebrow">MARISMART AR · Visual learning · Illustrative model</div><div id="clipname"></div></div>
     <div id="status"></div>
@@ -39,7 +56,7 @@
   <div id="hud-bottom"><div id="caption"></div><div id="extra"></div></div>
 </div>
 <div id="controls">
-  <select id="clipSel"><option value="1">Clip 1 — Disassembly</option><option value="2">Clip 2 — Reassembly</option><option value="3">Clip 3 — Motion &amp; flow</option></select>
+  <select id="clipSel"><option value="1">Clip 1 — Disassembly</option><option value="2">Clip 2 — Reassembly</option><option value="3">Clip 3 — Motion &amp; flow</option><option value="4">Clip 4 — Inspection walkthrough</option></select>
   <input id="scrub" type="range" min="0" max="1000" value="0" style="width:320px">
   <button id="play">Play</button>
 </div>

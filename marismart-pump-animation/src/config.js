@@ -39,4 +39,24 @@ export const CLIPS = {
   1: { id: 1, name: 'Clip 1 — Conceptual disassembly', duration: 16 },
   2: { id: 2, name: 'Clip 2 — Conceptual reassembly', duration: 14 },
   3: { id: 3, name: 'Clip 3 — Mechanical motion and flow', duration: 14 },
+  4: { id: 4, name: 'Clip 4 — Inspection walkthrough: function to evidence', duration: 29 },
 };
+
+// Clip 4 card text, taken from the reference illustration's five cards.
+export const INSPECTION_STEPS = [
+  { k: 'motor', tag: '01', title: 'Drive', color: '#1f5fb8',
+    fn: 'Provides mechanical motion in this generic system.',
+    purpose: 'Observe and record only the permitted external condition. Safe access and guarding requirements must be verified.' },
+  { k: 'pump', tag: '02', title: 'Pump', color: '#2e9b4f',
+    fn: 'Transfers fluid through the conceptual system.',
+    purpose: 'Identify the equipment tag, task scope and authorised observation points.' },
+  { k: 'gauge', tag: '03', title: 'Pressure indicator', color: '#d23b33',
+    fn: 'Displays a pressure reading.',
+    purpose: 'Record point, value, unit, time and reference. No approved limits are supplied.' },
+  { k: 'cool', tag: '04', title: 'Cooling circuit', color: '#f08a00',
+    fn: 'Represents heat transfer in the learning map.',
+    purpose: 'Identify where approved temperature and water observations would be recorded.' },
+  { k: 'rec', tag: '05', title: 'Record & handover', color: '#6a3fb5',
+    fn: 'Connects observations to the inspection record.',
+    purpose: 'Record findings, uncertainty, source references and the authorised person informed.' },
+];
