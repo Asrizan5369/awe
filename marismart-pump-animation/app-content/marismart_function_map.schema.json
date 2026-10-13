@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "marismart_function_map.schema.json",
+  "title": "MARISMART conceptual function map content",
+  "type": "object",
+  "required": ["schemaVersion", "object", "ui", "evidenceFields", "progression", "points", "scenarios", "metadata", "analytics"],
+  "$defs": {
+    "text": {
+      "description": "Bilingual text: ms = Bahasa Melayu, en = English (British).",
+      "type": "object",
+      "required": ["ms", "en"],
+      "additionalProperties": false,
+      "properties": { "ms": { "type": "string", "minLength": 1 }, "en": { "type": "string", "minLength": 1 } }
+    },
+    "textList": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
+    "option": {
+      "type": "object",
+      "required": ["text", "correct", "feedback"],
+      "additionalProperties": false,
+      "properties": { "text": { "$ref": "#/$defs/text" }, "correct": { "type": "boolean" }, "feedback": { "$ref": "#/$defs/text" } }
+    },
+    "question": {
+      "type": "object",
+      "required": ["question", "options"],
+      "properties": { "question": { "$ref": "#/$defs/text" }, "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/option" } } }
+    },
+    "videoLink": {
+      "type": "object",
+      "required": ["clip", "file", "startSeconds", "label"],
+      "properties": {
+        "clip": { "type": "integer", "minimum": 1 },
+        "file": { "type": "string" },
+        "startSeconds": { "type": "number", "minimum": 0 },
+        "label": { "$ref": "#/$defs/text" }
+      }
+    },
+    "point": {
+      "type": "object",
+      "required": ["id", "key", "colour", "title", "function", "purpose", "observe", "evidence", "doNot", "commonMistakes", "quickCheck", "verification", "links"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^0[1-9]$" },
+        "key": { "type": "string" },
+        "colour": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "title": { "$ref": "#/$defs/text" },
+        "function": { "$ref": "#/$defs/text" },
+        "purpose": { "$ref": "#/$defs/text" },
+        "observe": { "$ref": "#/$defs/textList" },
+        "evidence": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "doNot": { "$ref": "#/$defs/textList" },
+        "commonMistakes": { "$ref": "#/$defs/textList" },
+        "quickCheck": { "$ref": "#/$defs/question" },
+        "verification": {
+          "type": "object",
+          "required": ["status", "note"],
+          "properties": { "status": { "enum": ["verified", "pending", "unverified"] }, "note": { "$ref": "#/$defs/text" } }
+        },
+        "links": {
+          "type": "object",
+          "required": ["video", "ar"],
+          "properties": {
+            "video": { "type": "array", "items": { "$ref": "#/$defs/videoLink" } },
+            "documents": { "type": "array", "items": { "type": "object", "required": ["file", "label"], "properties": { "file": { "type": "string" }, "label": { "$ref": "#/$defs/text" } } } },
+            "ar": { "type": "object", "required": ["glbNode"], "properties": { "glbNode": { "type": "string" }, "relatedNodes": { "type": "array", "items": { "type": "string" } } } }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "object": {
+      "type": "object",
+      "required": ["id", "version", "status", "defaultLanguage", "languages", "title", "subtitle"],
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "status": { "enum": ["draft", "review", "approved"] },
+        "defaultLanguage": { "enum": ["ms", "en"] },
+        "languages": { "type": "array", "items": { "enum": ["ms", "en"] } },
+        "title": { "$ref": "#/$defs/text" },
+        "subtitle": { "$ref": "#/$defs/text" }
+      }
+    },
+    "ui": { "type": "object" },
+    "evidenceFields": { "type": "object", "additionalProperties": { "$ref": "#/$defs/text" } },
+    "progression": { "type": "object", "required": ["states", "selfCheck"] },
+    "points": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/point" } },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "relatedPoint", "situation", "options"],
+        "properties": {
+          "id": { "type": "string" },
+          "relatedPoint": { "type": "string" },
+          "situation": { "$ref": "#/$defs/text" },
+          "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/option" } }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["contentOwner", "smeReviewer", "reviewDate", "nextReviewDate", "changelog", "unverifiedItems", "alignment", "aiDisclosure", "disclaimer"],
+      "properties": {
+        "contentOwner": { "type": ["string", "null"] },
+        "smeReviewer": { "type": ["string", "null"] },
+        "reviewDate": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "nextReviewDate": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "unverifiedItems": { "$ref": "#/$defs/textList" },
+        "aiDisclosure": { "$ref": "#/$defs/text" },
+        "disclaimer": { "$ref": "#/$defs/text" }
+      }
+    },
+    "analytics": {
+      "type": "object",
+      "required": ["enabled", "consentRequired"],
+      "properties": { "enabled": { "type": "boolean" }, "consentRequired": { "const": true } }
+    }
+  }
+}

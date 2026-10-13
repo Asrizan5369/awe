@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MARISMART Function Map</title>
+<style>
+  :root { --ink:#1b2430; --muted:#4a5562; --line:#d5dbe2; --panel:#ffffff; --bg:#eef1f4; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Segoe UI",Arial,sans-serif; }
+  #map { max-width:760px; margin:0 auto; padding:16px; }
+  .fm-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+  .fm-head h2 { margin:0; font-size:20px; letter-spacing:.04em; text-transform:uppercase; }
+  .fm-sub { color:var(--muted); margin:4px 0 0; font-size:14px; }
+  .fm-tools { display:flex; gap:8px; align-items:center; flex-shrink:0; }
+  .fm-fallback { background:#fdf0cf; color:#6b4e00; border-radius:6px; padding:3px 8px; font-size:12px; font-weight:600; }
+  .fm-lang, .fm-reset { border:1px solid var(--line); background:#fff; border-radius:8px; padding:6px 10px; font:inherit; font-size:13px; cursor:pointer; }
+  .fm-note { font-size:13px; color:var(--muted); margin:8px 0 0; }
+  .fm-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .fm-card { text-align:left; background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c, #8a939c); border-radius:12px; padding:14px; cursor:pointer; font:inherit; color:var(--ink); display:flex; flex-direction:column; gap:6px; }
+  .fm-card .fm-id { font-size:13px; color:var(--muted); font-weight:600; }
+  .fm-card .fm-title { font-size:17px; font-weight:700; }
+  .fm-card .fm-state { font-size:13px; color:var(--muted); }
+  .fm-card.explored .fm-state { color:#6b4e00; font-weight:600; }
+  .fm-card.checked .fm-state { color:#1e7a3c; font-weight:700; }
+  .fm-card.sel { outline:3px solid var(--c); }
+  .fm-card.locked { opacity:.6; cursor:not-allowed; border-left-color:#8a939c; border-style:dashed; }
+  .fm-detail { background:var(--panel); border:1px solid var(--line); border-top:5px solid var(--c, #1b2430); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .fm-eyebrow { font-size:13px; letter-spacing:.12em; font-weight:700; color:var(--muted); }
+  .fm-detail h3 { margin:4px 0 8px; font-size:20px; }
+  .fm-k { font-weight:700; color:var(--c, #1b2430); font-size:14px; margin:10px 0 2px; }
+  .fm-detail p { margin:0 0 6px; line-height:1.45; }
+  .fm-sec { border-top:1px solid var(--line); padding:8px 0; }
+  .fm-sec summary { cursor:pointer; font-weight:700; font-size:15px; }
+  .fm-sec ul { margin:6px 0; padding-left:20px; line-height:1.45; }
+  .fm-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .fm-chips span { background:#eef1f4; border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:13px; }
+  .fm-badge { border-radius:6px; padding:2px 8px; font-size:12px; font-weight:700; }
+  .fm-badge.verified { background:#e3f2e8; color:#1e6b34; } .fm-badge.pending { background:#fdf0cf; color:#6b4e00; } .fm-badge.unverified { background:#fde7e5; color:#9b2c2c; }
+  .fm-links { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+  .fm-links a { color:#1846a3; }
+  .fm-q { margin:8px 0; }
+  .fm-qtext { font-weight:600; }
+  .fm-opt { display:block; width:100%; text-align:left; margin:6px 0; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font:inherit; cursor:pointer; }
+  .fm-opt.ok { border-color:#2e9b4f; background:#e3f2e8; } .fm-opt.bad { border-color:#d23b33; background:#fde7e5; }
+  .fm-fb { font-size:14px; margin:2px 0 8px; } .fm-fb.ok { color:#1e6b34; } .fm-fb.bad { color:#9b2c2c; }
+  .fm-foot { display:flex; justify-content:space-between; align-items:center; margin:12px 0; font-size:14px; color:var(--muted); }
+  .fm-meta { display:grid; grid-template-columns:max-content 1fr; gap:4px 12px; font-size:14px; margin:8px 0; }
+  .fm-meta dt { color:var(--muted); } .fm-meta dd { margin:0; }
+  button:focus-visible, summary:focus-visible { outline:3px solid #1846a3; outline-offset:2px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script type="module">
+  import { mountFunctionMap } from './function-map.js';
+  const data = await (await fetch('./marismart_function_map.json')).json();
+  window.fm = mountFunctionMap(document.getElementById('map'), data, { arSupported: false, videoBase: '../renders/', docBase: '../docs/' });
+</script>
+</body>
+</html>

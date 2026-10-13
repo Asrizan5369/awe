@@ -1,0 +1,1267 @@
+{
+  "$schema": "./marismart_function_map.schema.json",
+  "schemaVersion": "1.0",
+  "object": {
+    "id": "GENERIC-1",
+    "version": "2.1-draft",
+    "status": "draft",
+    "defaultLanguage": "ms",
+    "languages": [
+      "ms",
+      "en"
+    ],
+    "title": {
+      "ms": "Peta Fungsi Konseptual",
+      "en": "Conceptual function map"
+    },
+    "subtitle": {
+      "ms": "Skematik pembelajaran generik, bukan susun atur peralatan yang disahkan",
+      "en": "Generic learning schematic, not a verified equipment layout"
+    }
+  },
+  "ui": {
+    "fallbackBadge": {
+      "ms": "Paparan 2D",
+      "en": "2D fallback"
+    },
+    "fallbackExplain": {
+      "ms": "Peranti ini tidak menyokong AR, jadi paparan 2D digunakan. Kandungan pembelajarannya sama.",
+      "en": "This device does not support AR, so the 2D view is shown. The learning content is the same."
+    },
+    "openInAR": {
+      "ms": "Buka dalam AR",
+      "en": "Open in AR"
+    },
+    "languageToggle": {
+      "ms": "English",
+      "en": "Bahasa Melayu"
+    },
+    "state": {
+      "notExplored": {
+        "ms": "Pilih untuk meneroka",
+        "en": "Select to explore"
+      },
+      "explored": {
+        "ms": "Diterokai",
+        "en": "Explored"
+      },
+      "checked": {
+        "ms": "Disemak",
+        "en": "Checked"
+      }
+    },
+    "progress": {
+      "ms": "{explored}/{total} titik diterokai · {checked} disemak",
+      "en": "{explored}/{total} points explored · {checked} checked"
+    },
+    "pointHeading": {
+      "ms": "TITIK {id}",
+      "en": "POINT {id}"
+    },
+    "resetPractice": {
+      "ms": "Set semula latihan",
+      "en": "Reset practice"
+    },
+    "exportRecord": {
+      "ms": "Eksport rekod saya (PDF)",
+      "en": "Export my record (PDF)"
+    },
+    "sections": {
+      "function": {
+        "ms": "Fungsi",
+        "en": "Function"
+      },
+      "purpose": {
+        "ms": "Tujuan pembelajaran pemeriksaan",
+        "en": "Inspection learning purpose"
+      },
+      "observe": {
+        "ms": "Apa yang diperhatikan",
+        "en": "What to observe"
+      },
+      "evidence": {
+        "ms": "Bukti yang direkod",
+        "en": "Evidence to record"
+      },
+      "doNot": {
+        "ms": "Jangan lakukan",
+        "en": "Do not"
+      },
+      "commonMistakes": {
+        "ms": "Kesilapan biasa",
+        "en": "Common mistakes"
+      },
+      "quickCheck": {
+        "ms": "Semak cepat",
+        "en": "Quick check"
+      },
+      "verification": {
+        "ms": "Status pengesahan",
+        "en": "Verification status"
+      },
+      "links": {
+        "ms": "Pautan",
+        "en": "Links"
+      },
+      "scenarios": {
+        "ms": "Senario: apa tindakan anda?",
+        "en": "Scenarios: what would you do?"
+      },
+      "metadata": {
+        "ms": "Metadata objek dan pengesahan",
+        "en": "Object metadata and validation"
+      }
+    },
+    "feedback": {
+      "correct": {
+        "ms": "Betul",
+        "en": "Correct"
+      },
+      "incorrect": {
+        "ms": "Belum tepat",
+        "en": "Not quite"
+      },
+      "tryAgain": {
+        "ms": "Cuba lagi",
+        "en": "Try again"
+      }
+    },
+    "verificationStatus": {
+      "verified": {
+        "ms": "Disahkan",
+        "en": "Verified"
+      },
+      "pending": {
+        "ms": "Menunggu semakan pakar",
+        "en": "Awaiting expert review"
+      },
+      "unverified": {
+        "ms": "Belum disahkan",
+        "en": "Not verified"
+      }
+    },
+    "awaiting": {
+      "ms": "Menunggu",
+      "en": "Awaiting"
+    },
+    "selfCheckLocked": {
+      "ms": "Terokai kesemua 5 titik untuk membuka",
+      "en": "Explore all 5 points to unlock"
+    },
+    "selfCheckOpen": {
+      "ms": "Mula semak kendiri",
+      "en": "Start self-check"
+    },
+    "metaLabels": {
+      "id": {
+        "ms": "ID dan versi",
+        "en": "ID and version"
+      },
+      "contentOwner": {
+        "ms": "Pemilik kandungan",
+        "en": "Content owner"
+      },
+      "smeReviewer": {
+        "ms": "Penyemak pakar bidang",
+        "en": "Subject-matter reviewer"
+      },
+      "reviewDate": {
+        "ms": "Tarikh semakan",
+        "en": "Review date"
+      },
+      "nextReviewDate": {
+        "ms": "Semakan seterusnya",
+        "en": "Next review"
+      },
+      "unverified": {
+        "ms": "Perkara belum disahkan",
+        "en": "Not verified"
+      },
+      "sources": {
+        "ms": "Rujukan sumber",
+        "en": "Source references"
+      },
+      "stcw": {
+        "ms": "Penjajaran STCW",
+        "en": "STCW alignment"
+      },
+      "ai": {
+        "ms": "Pernyataan penggunaan AI",
+        "en": "AI use statement"
+      }
+    }
+  },
+  "evidenceFields": {
+    "equipmentTag": {
+      "ms": "Tag peralatan",
+      "en": "Equipment tag"
+    },
+    "point": {
+      "ms": "Titik",
+      "en": "Point"
+    },
+    "observation": {
+      "ms": "Pemerhatian",
+      "en": "Observation"
+    },
+    "guardStatus": {
+      "ms": "Status pengadang",
+      "en": "Guard status"
+    },
+    "value": {
+      "ms": "Nilai",
+      "en": "Value"
+    },
+    "unit": {
+      "ms": "Unit",
+      "en": "Unit"
+    },
+    "time": {
+      "ms": "Masa",
+      "en": "Time"
+    },
+    "reference": {
+      "ms": "Rujukan",
+      "en": "Reference"
+    },
+    "uncertainty": {
+      "ms": "Ketidakpastian",
+      "en": "Uncertainty"
+    },
+    "findings": {
+      "ms": "Dapatan",
+      "en": "Findings"
+    },
+    "authorisedPerson": {
+      "ms": "Orang diberi kuasa dimaklumkan",
+      "en": "Authorised person informed"
+    },
+    "signature": {
+      "ms": "Tandatangan",
+      "en": "Signature"
+    }
+  },
+  "progression": {
+    "states": [
+      "notExplored",
+      "explored",
+      "checked"
+    ],
+    "exploredWhen": "point_opened",
+    "checkedWhen": "quick_check_correct",
+    "selfCheck": {
+      "id": "06",
+      "title": {
+        "ms": "Semak kendiri",
+        "en": "Self-check"
+      },
+      "unlockAfterExplored": 5,
+      "questionOrder": [
+        "03",
+        "01",
+        "04",
+        "02",
+        "05"
+      ],
+      "source": "points[].quickCheck"
+    },
+    "persistence": "localStorage key 'marismart.GENERIC-1.progress'; optional, fail silently if unavailable"
+  },
+  "points": [
+    {
+      "id": "01",
+      "key": "drive",
+      "colour": "#1F5FB8",
+      "title": {
+        "ms": "Pemacu",
+        "en": "Drive"
+      },
+      "function": {
+        "ms": "Membekalkan gerakan mekanikal dalam sistem generik ini.",
+        "en": "Provides mechanical motion in this generic system."
+      },
+      "purpose": {
+        "ms": "Perhati dan rekod hanya keadaan luaran yang dibenarkan. Keperluan akses selamat dan pengadang mesti disahkan.",
+        "en": "Observe and record only the permitted external condition. Safe access and guarding requirements must be verified."
+      },
+      "observe": [
+        {
+          "ms": "Pengadang gandingan berada di tempatnya dan tidak rosak.",
+          "en": "Coupling guard is in place and undamaged."
+        },
+        {
+          "ms": "Plat nama motor boleh dibaca; rekod seperti yang tertera.",
+          "en": "Motor nameplate is legible; record it as marked."
+        },
+        {
+          "ms": "Keadaan luaran kabel dan kotak terminal, tanpa sentuhan.",
+          "en": "External condition of the cable and terminal box, without contact."
+        },
+        {
+          "ms": "Bunyi, getaran, bau atau perubahan warna yang luar biasa: huraikan sahaja, jangan ukur tanpa kebenaran.",
+          "en": "Unusual noise, vibration, smell or discolouration: describe only; do not measure without authorisation."
+        }
+      ],
+      "evidence": [
+        "point",
+        "observation",
+        "guardStatus",
+        "time"
+      ],
+      "doNot": [
+        {
+          "ms": "Jangan sentuh atau menghulurkan tangan ke arah bahagian berputar.",
+          "en": "Do not touch or reach towards rotating parts."
+        },
+        {
+          "ms": "Jangan buka, alih atau mengintai di sebalik pengadang.",
+          "en": "Do not open, remove or look behind the guard."
+        },
+        {
+          "ms": "Jangan sentuh permukaan motor kerana mungkin panas.",
+          "en": "Do not touch the motor surface; it may be hot."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "ms": "Menganggap pengadang ada tanpa memeriksanya.",
+          "en": "Assuming the guard is in place without checking."
+        },
+        {
+          "ms": "Menulis \"OK\" tanpa menghuraikan apa yang diperhatikan.",
+          "en": "Writing \"OK\" without describing what was observed."
+        }
+      ],
+      "quickCheck": {
+        "question": {
+          "ms": "Semasa pemeriksaan, anda dapati pengadang gandingan tiada. Apakah tindakan anda?",
+          "en": "During the inspection you find the coupling guard missing. What do you do?"
+        },
+        "options": [
+          {
+            "text": {
+              "ms": "Teruskan pemeriksaan dengan berhati-hati.",
+              "en": "Continue the inspection carefully."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Tidak selamat. Pengadang yang tiada ialah keadaan tidak selamat.",
+              "en": "Unsafe. A missing guard is an unsafe condition."
+            }
+          },
+          {
+            "text": {
+              "ms": "Henti, jauhkan diri dan laporkan kepada penyelia dengan segera.",
+              "en": "Stop, keep clear and report to the supervisor immediately."
+            },
+            "correct": true,
+            "feedback": {
+              "ms": "Betul. Jangan teruskan sehingga keadaan dinilai oleh orang diberi kuasa.",
+              "en": "Correct. Do not continue until an authorised person has assessed the condition."
+            }
+          },
+          {
+            "text": {
+              "ms": "Pasang semula pengadang sendiri.",
+              "en": "Refit the guard yourself."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Tidak. Kerja pemasangan di luar skop pemerhatian dan memerlukan kebenaran serta pengasingan.",
+              "en": "No. Fitting work is outside the observation scope and needs authorisation and isolation."
+            }
+          }
+        ]
+      },
+      "verification": {
+        "status": "pending",
+        "note": {
+          "ms": "Arah putaran dan butiran pemacu tidak disahkan daripada ilustrasi.",
+          "en": "Rotation direction and drive details are not verified from the illustration."
+        }
+      },
+      "links": {
+        "video": [
+          {
+            "clip": 4,
+            "file": "MARISMART_Clip4_Inspection_Walkthrough.mp4",
+            "startSeconds": 2.5,
+            "label": {
+              "ms": "Klip 4: walkthrough pemacu",
+              "en": "Clip 4: drive walkthrough"
+            }
+          },
+          {
+            "clip": 6,
+            "file": "MARISMART_Clip6_Record_Latest_Reading.mp4",
+            "startSeconds": 8.4,
+            "label": {
+              "ms": "Klip 6, langkah 2: akses selamat",
+              "en": "Clip 6, step 2: safe access"
+            }
+          }
+        ],
+        "ar": {
+          "glbNode": "Motor",
+          "relatedNodes": [
+            "CouplingGuard"
+          ]
+        }
+      }
+    },
+    {
+      "id": "02",
+      "key": "pump",
+      "colour": "#2E9B4F",
+      "title": {
+        "ms": "Pam",
+        "en": "Pump"
+      },
+      "function": {
+        "ms": "Memindahkan bendalir melalui sistem konseptual.",
+        "en": "Transfers fluid through the conceptual system."
+      },
+      "purpose": {
+        "ms": "Kenal pasti tag peralatan, skop tugas dan titik pemerhatian yang dibenarkan.",
+        "en": "Identify the equipment tag, task scope and authorised observation points."
+      },
+      "observe": [
+        {
+          "ms": "Tag peralatan pada plat tag; rekod dengan tepat.",
+          "en": "Equipment tag on the tag plate; record it exactly."
+        },
+        {
+          "ms": "Kesan kebocoran yang kelihatan di sambungan bebibir dan sekitar pam.",
+          "en": "Visible signs of leakage at flanged connections and around the pump."
+        },
+        {
+          "ms": "Keadaan luaran kaki dan pengikat pada rangka asas.",
+          "en": "External condition of the feet and fixings on the base frame."
+        },
+        {
+          "ms": "Kedudukan injap: rekod seperti ditemui sahaja.",
+          "en": "Valve positions: record as found only."
+        }
+      ],
+      "evidence": [
+        "equipmentTag",
+        "point",
+        "observation",
+        "time",
+        "reference"
+      ],
+      "doNot": [
+        {
+          "ms": "Jangan laraskan injap atau sebarang kawalan.",
+          "en": "Do not adjust valves or any controls."
+        },
+        {
+          "ms": "Jangan buka penutup atau sambungan.",
+          "en": "Do not open covers or connections."
+        },
+        {
+          "ms": "Jangan andaikan identiti port sedutan atau discas.",
+          "en": "Do not assume which port is suction or discharge."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "ms": "Menggunakan nama umum \"pam\" tanpa tag peralatan.",
+          "en": "Using the generic name \"pump\" without the equipment tag."
+        },
+        {
+          "ms": "Mendekati peralatan sebelum skop dan titik pemerhatian disahkan.",
+          "en": "Approaching before the scope and observation points are confirmed."
+        }
+      ],
+      "quickCheck": {
+        "question": {
+          "ms": "Apakah yang mesti disahkan sebelum mendekati pam?",
+          "en": "What must be confirmed before approaching the pump?"
+        },
+        "options": [
+          {
+            "text": {
+              "ms": "Tag peralatan, skop tugas dan titik pemerhatian yang dibenarkan.",
+              "en": "The equipment tag, task scope and authorised observation points."
+            },
+            "correct": true,
+            "feedback": {
+              "ms": "Betul. Ketiga-tiganya menentukan apa yang boleh anda perhati dan rekod.",
+              "en": "Correct. All three define what you may observe and record."
+            }
+          },
+          {
+            "text": {
+              "ms": "Kelajuan operasi pam.",
+              "en": "The pump's operating speed."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Kelajuan operasi tidak dibekalkan dan bukan prasyarat pemerhatian luaran.",
+              "en": "Operating speed is not supplied and is not a prerequisite for external observation."
+            }
+          },
+          {
+            "text": {
+              "ms": "Jenis pendesak di dalam pam.",
+              "en": "The type of impeller inside the pump."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Binaan dalaman tidak disahkan dan tidak diperlukan untuk pemerhatian luaran.",
+              "en": "Internal construction is not verified and is not needed for external observation."
+            }
+          }
+        ]
+      },
+      "verification": {
+        "status": "unverified",
+        "note": {
+          "ms": "Jenis pam, binaan dalaman serta identiti port sedutan dan discas tidak disahkan.",
+          "en": "Pump type, internal construction and suction/discharge port identities are not verified."
+        }
+      },
+      "links": {
+        "video": [
+          {
+            "clip": 4,
+            "file": "MARISMART_Clip4_Inspection_Walkthrough.mp4",
+            "startSeconds": 7.1,
+            "label": {
+              "ms": "Klip 4: walkthrough pam",
+              "en": "Clip 4: pump walkthrough"
+            }
+          },
+          {
+            "clip": 6,
+            "file": "MARISMART_Clip6_Record_Latest_Reading.mp4",
+            "startSeconds": 2.0,
+            "label": {
+              "ms": "Klip 6, langkah 1: persediaan",
+              "en": "Clip 6, step 1: preparation"
+            }
+          }
+        ],
+        "ar": {
+          "glbNode": "Pump",
+          "relatedNodes": [
+            "Pipe_Upper",
+            "Pipe_Lower"
+          ]
+        }
+      }
+    },
+    {
+      "id": "03",
+      "key": "pressureIndicator",
+      "colour": "#D23B33",
+      "title": {
+        "ms": "Penunjuk tekanan",
+        "en": "Pressure indicator"
+      },
+      "function": {
+        "ms": "Memaparkan bacaan tekanan.",
+        "en": "Displays a pressure reading."
+      },
+      "purpose": {
+        "ms": "Rekod titik, nilai, unit, masa dan rujukan. Tiada had yang diluluskan dibekalkan.",
+        "en": "Record point, value, unit, time and reference. No approved limits are supplied."
+      },
+      "observe": [
+        {
+          "ms": "Tag instrumen dan label kalibrasi; rekod status seperti yang tertera.",
+          "en": "Instrument tag and calibration label; record the status as marked."
+        },
+        {
+          "ms": "Unit dan resolusi skala yang tertera pada dail.",
+          "en": "Unit and scale resolution marked on the dial."
+        },
+        {
+          "ms": "Sama ada jarum stabil atau berayun.",
+          "en": "Whether the needle is steady or fluctuating."
+        },
+        {
+          "ms": "Keadaan kaca dail: retak atau berkabus.",
+          "en": "Dial glass condition: cracked or fogged."
+        }
+      ],
+      "evidence": [
+        "point",
+        "value",
+        "unit",
+        "time",
+        "reference",
+        "uncertainty"
+      ],
+      "doNot": [
+        {
+          "ms": "Jangan ketuk dail untuk \"menggerakkan\" jarum.",
+          "en": "Do not tap the dial to \"free\" the needle."
+        },
+        {
+          "ms": "Jangan anggar atau bundarkan nilai.",
+          "en": "Do not estimate or round the value."
+        },
+        {
+          "ms": "Jangan nilai bacaan sebagai normal atau tidak normal tanpa had yang diluluskan.",
+          "en": "Do not judge a reading as normal or abnormal without approved limits."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "ms": "Paralaks: membaca dari sudut serong.",
+          "en": "Parallax: reading from an angle."
+        },
+        {
+          "ms": "Unit atau masa tertinggal.",
+          "en": "Missing unit or time."
+        },
+        {
+          "ms": "Merekod masa mengisi borang, bukan masa bacaan diambil.",
+          "en": "Recording the time of writing instead of the time of reading."
+        }
+      ],
+      "quickCheck": {
+        "question": {
+          "ms": "Bagaimanakah cara terbaik mengelakkan ralat paralaks?",
+          "en": "How do you best avoid parallax error?"
+        },
+        "options": [
+          {
+            "text": {
+              "ms": "Baca pada aras mata, tegak lurus dengan dail.",
+              "en": "Read at eye level, square to the dial."
+            },
+            "correct": true,
+            "feedback": {
+              "ms": "Betul. Mata sejajar dengan jarum menghapuskan sudut bacaan.",
+              "en": "Correct. Aligning your eye with the needle removes the viewing angle."
+            }
+          },
+          {
+            "text": {
+              "ms": "Baca dari sisi supaya jarum lebih jelas.",
+              "en": "Read from the side so the needle is clearer."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Membaca dari sisi menyebabkan paralaks.",
+              "en": "Reading from the side causes parallax."
+            }
+          },
+          {
+            "text": {
+              "ms": "Ambil purata bacaan rakan sekumpulan.",
+              "en": "Take the average of your group's readings."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Setiap pemerhati merekod bacaan sendiri; jangan salin nilai.",
+              "en": "Each observer records their own reading; do not copy values."
+            }
+          }
+        ]
+      },
+      "verification": {
+        "status": "unverified",
+        "note": {
+          "ms": "Dail model tidak bertanda; tiada nilai atau had dibekalkan. Penunjuk disambung melalui tapping dan bukan komponen aliran terus.",
+          "en": "The model's dial is unmarked; no values or limits are supplied. The indicator is connected through a tapping and is not a through-flow component."
+        }
+      },
+      "links": {
+        "video": [
+          {
+            "clip": 4,
+            "file": "MARISMART_Clip4_Inspection_Walkthrough.mp4",
+            "startSeconds": 11.7,
+            "label": {
+              "ms": "Klip 4: walkthrough penunjuk tekanan",
+              "en": "Clip 4: pressure indicator walkthrough"
+            }
+          },
+          {
+            "clip": 6,
+            "file": "MARISMART_Clip6_Record_Latest_Reading.mp4",
+            "startSeconds": 14.8,
+            "label": {
+              "ms": "Klip 6, langkah 3: ambil bacaan",
+              "en": "Clip 6, step 3: take the reading"
+            }
+          }
+        ],
+        "ar": {
+          "glbNode": "PressureIndicator",
+          "relatedNodes": [
+            "Pipe_Upper"
+          ]
+        }
+      }
+    },
+    {
+      "id": "04",
+      "key": "coolingCircuit",
+      "colour": "#F08A00",
+      "title": {
+        "ms": "Litar penyejukan",
+        "en": "Cooling circuit"
+      },
+      "function": {
+        "ms": "Mewakili pemindahan haba dalam peta pembelajaran.",
+        "en": "Represents heat transfer in the learning map."
+      },
+      "purpose": {
+        "ms": "Kenal pasti di mana pemerhatian suhu dan air yang diluluskan akan direkodkan.",
+        "en": "Identify where approved temperature and water observations would be recorded."
+      },
+      "observe": [
+        {
+          "ms": "Titik pemerhatian suhu atau air yang diluluskan, jika ada.",
+          "en": "Approved temperature or water observation points, if any."
+        },
+        {
+          "ms": "Kebocoran yang kelihatan pada sambungan paip ke modul.",
+          "en": "Visible leakage at the pipe connections to the module."
+        },
+        {
+          "ms": "Halangan pada sirip atau kipas, tanpa sentuhan.",
+          "en": "Obstruction of the fins or fan, without contact."
+        }
+      ],
+      "evidence": [
+        "point",
+        "observation",
+        "time",
+        "reference"
+      ],
+      "doNot": [
+        {
+          "ms": "Jangan rekod suhu di titik yang tidak diluluskan.",
+          "en": "Do not record temperatures at points that are not approved."
+        },
+        {
+          "ms": "Jangan andaikan warna paip menunjukkan suhu.",
+          "en": "Do not assume pipe colour indicates temperature."
+        },
+        {
+          "ms": "Jangan sentuh permukaan atau kipas.",
+          "en": "Do not touch surfaces or the fan."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "ms": "Menganggap paip merah bermaksud panas dan paip biru bermaksud sejuk.",
+          "en": "Assuming the red pipe means hot and the blue pipe means cold."
+        },
+        {
+          "ms": "Meninggalkan medan kosong dan bukannya menulis \"tiada titik diluluskan\".",
+          "en": "Leaving the field blank instead of writing \"no approved points\"."
+        }
+      ],
+      "quickCheck": {
+        "question": {
+          "ms": "Tiada titik suhu yang diluluskan untuk peralatan ini. Apakah yang anda tulis?",
+          "en": "There are no approved temperature points for this equipment. What do you write?"
+        },
+        "options": [
+          {
+            "text": {
+              "ms": "\"Tiada titik diluluskan\", kemudian maklumkan penyelia.",
+              "en": "\"No approved points\", then inform the supervisor."
+            },
+            "correct": true,
+            "feedback": {
+              "ms": "Betul. Rekod yang jelas lebih baik daripada medan kosong.",
+              "en": "Correct. A clear entry is better than a blank field."
+            }
+          },
+          {
+            "text": {
+              "ms": "Anggaran suhu berdasarkan sentuhan.",
+              "en": "An estimated temperature based on touch."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Tidak selamat dan bukan bukti yang sah.",
+              "en": "Unsafe, and not valid evidence."
+            }
+          },
+          {
+            "text": {
+              "ms": "Biarkan medan itu kosong.",
+              "en": "Leave the field blank."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Medan kosong tidak dapat dibezakan daripada terlupa mengisi.",
+              "en": "A blank field cannot be told apart from a forgotten one."
+            }
+          }
+        ]
+      },
+      "verification": {
+        "status": "unverified",
+        "note": {
+          "ms": "Laluan aliran dalaman penukar haba tidak disahkan. Anak panah aliran dalam model adalah konseptual.",
+          "en": "The heat exchanger's internal flow path is not verified. Flow arrows in the model are conceptual."
+        }
+      },
+      "links": {
+        "video": [
+          {
+            "clip": 3,
+            "file": "MARISMART_Clip3_Mechanical_Motion_and_Flow.mp4",
+            "startSeconds": 2.0,
+            "label": {
+              "ms": "Klip 3: aliran konseptual",
+              "en": "Clip 3: conceptual flow"
+            }
+          },
+          {
+            "clip": 4,
+            "file": "MARISMART_Clip4_Inspection_Walkthrough.mp4",
+            "startSeconds": 16.3,
+            "label": {
+              "ms": "Klip 4: walkthrough litar penyejukan",
+              "en": "Clip 4: cooling circuit walkthrough"
+            }
+          },
+          {
+            "clip": 6,
+            "file": "MARISMART_Clip6_Record_Latest_Reading.mp4",
+            "startSeconds": 21.2,
+            "label": {
+              "ms": "Klip 6, langkah 4: pemerhatian penyejukan",
+              "en": "Clip 6, step 4: cooling observations"
+            }
+          }
+        ],
+        "ar": {
+          "glbNode": "CoolingModule",
+          "relatedNodes": [
+            "Pipe_Upper",
+            "Pipe_Lower"
+          ]
+        }
+      }
+    },
+    {
+      "id": "05",
+      "key": "recordHandover",
+      "colour": "#6A3FB5",
+      "title": {
+        "ms": "Rekod dan serah",
+        "en": "Record & handover"
+      },
+      "function": {
+        "ms": "Menghubungkan pemerhatian kepada rekod pemeriksaan.",
+        "en": "Connects observations to the inspection record."
+      },
+      "purpose": {
+        "ms": "Rekod dapatan, ketidakpastian, rujukan sumber dan orang diberi kuasa yang dimaklumkan.",
+        "en": "Record findings, uncertainty, source references and the authorised person informed."
+      },
+      "observe": [
+        {
+          "ms": "Semua medan rekod lengkap, termasuk unit dan masa.",
+          "en": "All record fields are complete, including unit and time."
+        },
+        {
+          "ms": "Bacaan terkini ditanda dengan jelas.",
+          "en": "The latest reading is clearly marked."
+        },
+        {
+          "ms": "Perkara yang belum disahkan dinyatakan.",
+          "en": "Unverified items are stated."
+        }
+      ],
+      "evidence": [
+        "findings",
+        "uncertainty",
+        "reference",
+        "authorisedPerson",
+        "time",
+        "signature"
+      ],
+      "doNot": [
+        {
+          "ms": "Jangan serah secara lisan sahaja.",
+          "en": "Do not hand over verbally only."
+        },
+        {
+          "ms": "Jangan membuat penilaian trend tanpa had yang diluluskan.",
+          "en": "Do not judge trends without approved limits."
+        },
+        {
+          "ms": "Jangan ubah entri lama; buat entri baharu bersama masa.",
+          "en": "Do not alter earlier entries; make a new, timed entry."
+        }
+      ],
+      "commonMistakes": [
+        {
+          "ms": "Tiada nama atau tandatangan penerima.",
+          "en": "No receiver name or signature."
+        },
+        {
+          "ms": "Tidak menyebut ketidakpastian atau perkara yang belum disahkan.",
+          "en": "Not mentioning uncertainty or unverified items."
+        }
+      ],
+      "quickCheck": {
+        "question": {
+          "ms": "Apakah komunikasi gelung tertutup semasa serahan?",
+          "en": "What is closed-loop communication during handover?"
+        },
+        "options": [
+          {
+            "text": {
+              "ms": "Penerima mengulang semula maklumat utama untuk pengesahan.",
+              "en": "The receiver repeats the key information back for confirmation."
+            },
+            "correct": true,
+            "feedback": {
+              "ms": "Betul. Ini memastikan maklumat diterima dengan tepat.",
+              "en": "Correct. It confirms the information was received accurately."
+            }
+          },
+          {
+            "text": {
+              "ms": "Menghantar mesej tanpa menunggu balasan.",
+              "en": "Sending a message without waiting for a reply."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Tiada pengesahan, jadi gelung tidak tertutup.",
+              "en": "There is no confirmation, so the loop is not closed."
+            }
+          },
+          {
+            "text": {
+              "ms": "Menyerahkan borang tanpa sebarang penerangan.",
+              "en": "Handing over the form without any explanation."
+            },
+            "correct": false,
+            "feedback": {
+              "ms": "Borang perlu disertai penerangan ringkas dan pengesahan penerima.",
+              "en": "The form needs a brief explanation and the receiver's confirmation."
+            }
+          }
+        ]
+      },
+      "verification": {
+        "status": "pending",
+        "note": {
+          "ms": "Kandungan prosedur ini perlu disemak terhadap prosedur serahan jabatan.",
+          "en": "This procedural content must be checked against the department's handover procedure."
+        }
+      },
+      "links": {
+        "video": [
+          {
+            "clip": 4,
+            "file": "MARISMART_Clip4_Inspection_Walkthrough.mp4",
+            "startSeconds": 20.9,
+            "label": {
+              "ms": "Klip 4: walkthrough rekod dan serah",
+              "en": "Clip 4: record and handover walkthrough"
+            }
+          },
+          {
+            "clip": 6,
+            "file": "MARISMART_Clip6_Record_Latest_Reading.mp4",
+            "startSeconds": 27.6,
+            "label": {
+              "ms": "Klip 6, langkah 5: rekod dan serah",
+              "en": "Clip 6, step 5: record and hand over"
+            }
+          }
+        ],
+        "documents": [
+          {
+            "file": "MARISMART_Borang_Rekod_Pemeriksaan.pdf",
+            "label": {
+              "ms": "Borang rekod pemeriksaan",
+              "en": "Inspection record form"
+            }
+          }
+        ],
+        "ar": {
+          "glbNode": "RecordHandoverBoard",
+          "relatedNodes": []
+        }
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "S1",
+      "relatedPoint": "03",
+      "situation": {
+        "ms": "Jarum penunjuk tekanan berayun dan tidak stabil semasa anda membaca.",
+        "en": "The pressure indicator needle is fluctuating while you read it."
+      },
+      "options": [
+        {
+          "text": {
+            "ms": "Rekod nilai tertinggi sahaja.",
+            "en": "Record only the highest value."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "Satu nilai terpilih tidak mewakili apa yang diperhatikan.",
+            "en": "A single chosen value does not represent what was observed."
+          }
+        },
+        {
+          "text": {
+            "ms": "Rekod seperti yang ditetapkan oleh prosedur, catat \"jarum berayun\" dalam ketidakpastian, dan maklumkan penyelia.",
+            "en": "Record as the procedure requires, note \"needle fluctuating\" under uncertainty, and inform the supervisor."
+          },
+          "correct": true,
+          "feedback": {
+            "ms": "Betul. Keadaan sebenar direkod dan orang diberi kuasa dimaklumkan.",
+            "en": "Correct. The actual condition is recorded and the authorised person is informed."
+          }
+        },
+        {
+          "text": {
+            "ms": "Ketuk dail sehingga jarum stabil.",
+            "en": "Tap the dial until the needle settles."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "Jangan ketuk instrumen; ia boleh menjejaskan bacaan dan instrumen.",
+            "en": "Do not tap the instrument; it can affect both the reading and the instrument."
+          }
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "relatedPoint": "03",
+      "situation": {
+        "ms": "Anda telah merekod bacaan, tetapi tiada had yang diluluskan dibekalkan.",
+        "en": "You have recorded a reading, but no approved limits are supplied."
+      },
+      "options": [
+        {
+          "text": {
+            "ms": "Tulis \"normal\" kerana nilainya kelihatan munasabah.",
+            "en": "Write \"normal\" because the value looks reasonable."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "\"Normal\" hanya boleh ditentukan berdasarkan had yang diluluskan.",
+            "en": "\"Normal\" can only be decided against approved limits."
+          }
+        },
+        {
+          "text": {
+            "ms": "Rekod seperti ditemui, tulis \"Tiada had dibekalkan\", dan rujuk kepada orang diberi kuasa.",
+            "en": "Record as found, write \"No limits supplied\", and refer to the authorised person."
+          },
+          "correct": true,
+          "feedback": {
+            "ms": "Betul. Keputusan dibuat oleh orang diberi kuasa berdasarkan sumber yang sah.",
+            "en": "Correct. The authorised person decides, based on a valid source."
+          }
+        },
+        {
+          "text": {
+            "ms": "Bandingkan dengan bacaan rakan dan tulis keputusan.",
+            "en": "Compare with a classmate's reading and write a conclusion."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "Bacaan rakan bukan had yang diluluskan.",
+            "en": "A classmate's reading is not an approved limit."
+          }
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "relatedPoint": "05",
+      "situation": {
+        "ms": "Bacaan terkini anda berbeza daripada entri terdahulu dalam log.",
+        "en": "Your latest reading differs from the previous entry in the log."
+      },
+      "options": [
+        {
+          "text": {
+            "ms": "Padam entri terdahulu supaya log konsisten.",
+            "en": "Erase the previous entry so the log is consistent."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "Jangan sekali-kali mengubah entri lama; ia menjejaskan kebolehkesanan.",
+            "en": "Never alter earlier entries; it destroys traceability."
+          }
+        },
+        {
+          "text": {
+            "ms": "Rekod bacaan terkini seperti ditemui dan laporkan perbezaan itu kepada orang diberi kuasa tanpa membuat kesimpulan trend.",
+            "en": "Record the latest reading as found and report the difference to the authorised person without drawing a trend conclusion."
+          },
+          "correct": true,
+          "feedback": {
+            "ms": "Betul. Perbezaan dilaporkan; penilaian dibuat berdasarkan had yang diluluskan.",
+            "en": "Correct. The difference is reported; judgement is made against approved limits."
+          }
+        },
+        {
+          "text": {
+            "ms": "Anggap instrumen rosak dan jangan rekod bacaan.",
+            "en": "Assume the instrument is faulty and do not record the reading."
+          },
+          "correct": false,
+          "feedback": {
+            "ms": "Rekod apa yang diperhatikan; status instrumen disahkan oleh orang diberi kuasa.",
+            "en": "Record what you observed; the instrument's status is confirmed by the authorised person."
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "contentOwner": null,
+    "smeReviewer": null,
+    "reviewDate": null,
+    "nextReviewDate": null,
+    "changelog": [
+      {
+        "version": "2.0-draft",
+        "date": null,
+        "note": {
+          "ms": "Versi asal: lima titik dengan fungsi dan tujuan pembelajaran.",
+          "en": "Original version: five points with function and learning purpose."
+        }
+      },
+      {
+        "version": "2.1-draft",
+        "date": "2026-10-13",
+        "note": {
+          "ms": "Tambah pemerhatian, bukti, larangan, kesilapan biasa, semak cepat, status pengesahan, pautan video dan AR, senario serta metadata dwibahasa.",
+          "en": "Added observations, evidence, do-nots, common mistakes, quick checks, verification status, video and AR links, scenarios and bilingual metadata."
+        }
+      }
+    ],
+    "unverifiedItems": [
+      {
+        "ms": "Jenis pam dan binaan dalaman.",
+        "en": "Pump type and internal construction."
+      },
+      {
+        "ms": "Arah putaran aci yang diluluskan.",
+        "en": "Approved direction of shaft rotation."
+      },
+      {
+        "ms": "Identiti port sedutan dan discas.",
+        "en": "Suction and discharge port identities."
+      },
+      {
+        "ms": "Laluan aliran dalaman penukar haba.",
+        "en": "Internal heat-exchanger flow passages."
+      },
+      {
+        "ms": "Turutan pembukaan pengeluar.",
+        "en": "Manufacturer's disassembly sequence."
+      },
+      {
+        "ms": "Kelajuan, suhu dan tekanan operasi sebenar, serta had yang diluluskan.",
+        "en": "Actual operating speed, temperature and pressure, and approved limits."
+      }
+    ],
+    "sources": [],
+    "sourcesNote": {
+      "ms": "Belum dibekalkan. Tambah lukisan, manual atau prosedur yang menjadi autoriti teknikal.",
+      "en": "Not yet supplied. Add the drawing, manual or procedure that is the technical authority."
+    },
+    "alignment": {
+      "clo": [
+        {
+          "code": "CLO1",
+          "text": {
+            "ms": "Melaksanakan pemeriksaan luaran dan merekod bacaan instrumen dengan tepat serta lengkap mengikut prosedur.",
+            "en": "Carry out an external inspection and record instrument readings accurately and completely according to procedure."
+          }
+        },
+        {
+          "code": "CLO2",
+          "text": {
+            "ms": "Mempamerkan amalan kerja selamat dan tanggungjawab semasa serahan rekod.",
+            "en": "Demonstrate safe working practice and responsibility when handing over records."
+          }
+        },
+        {
+          "code": "CLO3",
+          "text": {
+            "ms": "Menganalisis ketidakpastian bacaan dan mewajarkan keputusan berkaitan data yang direkod.",
+            "en": "Analyse reading uncertainty and justify decisions about recorded data."
+          }
+        }
+      ],
+      "plo": null,
+      "stcw": {
+        "ms": "Kod STCW, Jadual A-III/1: kompetensi \"Maintain a safe engineering watch\".",
+        "en": "STCW Code, Table A-III/1: competence \"Maintain a safe engineering watch\"."
+      }
+    },
+    "aiDisclosure": {
+      "ms": "Kandungan ini disediakan dengan bantuan AI generatif dan mesti disemak oleh pakar bidang sebelum digunakan dalam pengajaran.",
+      "en": "This content was prepared with generative AI assistance and must be reviewed by a subject-matter expert before use in teaching."
+    },
+    "accessibility": {
+      "ms": "Sasaran nisbah kontras teks sekurang-kurangnya 4.5:1, boleh dikendalikan dengan papan kekunci, dan setiap ikon disertai teks.",
+      "en": "Target text contrast of at least 4.5:1, keyboard operable, and every icon accompanied by text."
+    },
+    "disclaimer": {
+      "ms": "Model pembelajaran ilustratif. Bukan prosedur penyelenggaraan atau pemeriksaan yang diluluskan.",
+      "en": "Illustrative learning model. Not an approved maintenance or inspection procedure."
+    }
+  },
+  "analytics": {
+    "enabled": false,
+    "consentRequired": true,
+    "standard": "xAPI",
+    "activityIdBase": "https://sim-marismart-course.mohdasrizan.chatgpt.site/activities/GENERIC-1",
+    "events": [
+      {
+        "event": "point_opened",
+        "verb": "http://adlnet.gov/expapi/verbs/experienced",
+        "activity": "{base}/point/{id}"
+      },
+      {
+        "event": "quick_check_answered",
+        "verb": "http://adlnet.gov/expapi/verbs/answered",
+        "activity": "{base}/point/{id}/quick-check",
+        "result": [
+          "success",
+          "response"
+        ]
+      },
+      {
+        "event": "scenario_answered",
+        "verb": "http://adlnet.gov/expapi/verbs/answered",
+        "activity": "{base}/scenario/{id}",
+        "result": [
+          "success",
+          "response"
+        ]
+      },
+      {
+        "event": "self_check_completed",
+        "verb": "http://adlnet.gov/expapi/verbs/completed",
+        "activity": "{base}/self-check",
+        "result": [
+          "score"
+        ]
+      }
+    ],
+    "note": {
+      "ms": "Aktifkan hanya selepas notis persetujuan pelajar dan kelulusan etika penyelidikan.",
+      "en": "Enable only after a learner consent notice and research ethics approval."
+    }
+  }
+}
