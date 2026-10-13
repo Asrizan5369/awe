@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MARISMART Pump Skid</title>
+<style>
+  :root { --ink:#1b2430; --muted:#55606e; --panel:rgba(255,255,255,.92); --line:#d5dbe2; }
+  html,body { margin:0; background:#eef1f4; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color:var(--ink); overflow:hidden; }
+  #stage { position:relative; width:1920px; height:1080px; transform-origin:0 0; }
+  #c { position:absolute; inset:0; width:1920px; height:1080px; }
+  #hud-top { position:absolute; left:44px; top:32px; right:44px; display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
+  .eyebrow { font-size:17px; letter-spacing:.14em; text-transform:uppercase; color:#9b2c3a; font-weight:600; }
+  #clipname { font-size:40px; font-weight:700; margin-top:4px; }
+  #status { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 18px; font-size:20px; max-width:760px; font-weight:600; }
+  #hud-bottom { position:absolute; left:44px; right:44px; bottom:28px; }
+  #caption { display:inline-block; background:#1b2430; color:#fff; font-size:27px; font-weight:600; padding:12px 20px; border-radius:8px; }
+  #extra { margin-top:10px; font-size:18px; color:var(--muted); line-height:1.45; }
+  #labels { position:absolute; inset:0; pointer-events:none; }
+  .label { position:absolute; transform:translate(-50%,-100%); display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px 12px 6px 6px; font-size:20px; font-weight:600; white-space:nowrap; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .label.active { outline:3px solid #f08a00; }
+  .label.focus { outline:4px solid var(--c); transform:translate(-50%,-100%) scale(1.15); z-index:2; }
+  .tag { color:#fff; border-radius:6px; padding:3px 9px; font-size:18px; font-weight:700; }
+  .note { position:absolute; transform:translate(-50%,0); background:#fff8e1; border:1px dashed #b88a00; border-radius:8px; padding:6px 10px; font-size:17px; max-width:330px; white-space:normal; line-height:1.3; }
+  #card { display:none; position:absolute; left:44px; top:150px; width:600px; box-sizing:border-box; background:#fff; border:1px solid var(--line); border-left:8px solid var(--c); border-radius:12px; padding:18px 22px; box-shadow:0 6px 20px rgba(0,0,0,.10); }
+  .card-h { display:flex; align-items:center; gap:12px; font-size:30px; font-weight:700; margin-bottom:12px; }
+  .card-k { font-size:18px; font-weight:700; color:var(--c); margin-top:8px; }
+  .card-v { font-size:22px; line-height:1.35; }
+  #progress { display:none; position:absolute; right:44px; top:120px; gap:8px; }
+  .step { display:flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:5px 10px 5px 5px; font-size:16px; font-weight:600; opacity:.6; }
+  .step .tick { color:#2e9b4f; font-weight:800; visibility:hidden; }
+  .step.done { opacity:1; } .step.done .tick { visibility:visible; }
+  .step.now { opacity:1; outline:3px solid var(--c); }
+  #summary { display:none; position:absolute; left:44px; top:150px; width:600px; box-sizing:border-box; background:#fff; border:1px solid var(--line); border-left:8px solid #6a3fb5; border-radius:12px; padding:18px 22px; font-size:22px; line-height:1.4; box-shadow:0 6px 20px rgba(0,0,0,.10); }
+  #qmark { display:none; position:absolute; transform:translate(-50%,-100%); width:64px; height:64px; border-radius:50%; background:#1b2430; color:#fff; font-size:42px; font-weight:800; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(255,255,255,.85), 0 4px 14px rgba(0,0,0,.25); }
+  .countdown { font-size:64px; font-weight:800; color:#9b2c3a; margin-top:10px; }
+  #log { display:none; position:absolute; left:44px; top:128px; width:600px; box-sizing:border-box; background:#fffef8; border:1px solid #d9d2b8; border-radius:10px; padding:14px 18px; box-shadow:0 6px 20px rgba(0,0,0,.10); font-size:16px; }
+  .log-h { font-size:23px; font-weight:700; border-bottom:2px solid #1b2430; padding-bottom:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:baseline; }
+  .log-h span { font-size:14px; font-weight:600; color:var(--muted); }
+  .log-sec { display:flex; align-items:center; gap:8px; margin-top:8px; font-weight:700; font-size:16px; opacity:.45; }
+  .log-sec .tag { font-size:13px; padding:2px 7px; }
+  .log-sec.now, .log-sec.done { opacity:1; } .log-sec.now { color:var(--c); }
+  .log-sec .tick { color:#2e9b4f; margin-left:auto; font-weight:800; }
+  .log-row { display:grid; grid-template-columns:220px 1fr; border-bottom:1px dotted #cfc8ae; padding:3px 0; min-height:22px; }
+  .log-row > div:first-child { color:#55606e; }
+  .log-row.meta .hand, .log-row.meta > div:last-child { color:#55606e; font-style:italic; }
+  .log-row.writing { background:#fff3c4; }
+  .hand { color:#1846a3; font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive; }
+  .cur { color:#1846a3; font-weight:700; }
+  #action { display:none; position:absolute; left:680px; top:128px; right:400px; background:#fff; border:1px solid var(--line); border-left:8px solid var(--c); border-radius:10px; padding:12px 16px; font-size:21px; line-height:1.35; box-shadow:0 4px 14px rgba(0,0,0,.08); }
+  #action b { color:var(--c); }
+  #inset { display:none; position:absolute; left:1552px; top:124px; width:320px; height:320px; border:4px solid #d23b33; border-radius:10px; pointer-events:none; }
+  #inset div { position:absolute; left:0; right:0; top:100%; margin-top:8px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:16px; line-height:1.3; }
+  #summary.wide { left:680px; width:700px; top:128px; }
+  #summary b { font-size:28px; display:block; margin-bottom:8px; }
+  #controls { display:none; position:fixed; left:12px; bottom:12px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px; gap:8px; align-items:center; font-size:14px; z-index:5; }
+  body.viewer #controls { display:flex; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1920" height="1080"></canvas>
+  <div id="labels"></div>
+  <div id="card"></div>
+  <div id="qmark">?</div>
+  <div id="progress"></div>
+  <div id="summary"></div>
+  <div id="log"></div>
+  <div id="action"></div>
+  <div id="inset"><div><b>Close-up, square to the dial.</b> Read the scale and unit marked on the actual instrument. This model's dial is unmarked: no values are supplied.</div></div>
+  <div id="hud-top">
+    <div><div class="eyebrow">MARISMART AR · Visual learning · Illustrative model</div><div id="clipname"></div></div>
+    <div id="status"></div>
+  </div>
+  <div id="hud-bottom"><div id="caption"></div><div id="extra"></div></div>
+</div>
+<div id="controls">
+  <select id="clipSel"><option value="1">Clip 1 — Disassembly</option><option value="2">Clip 2 — Reassembly</option><option value="3">Clip 3 — Motion &amp; flow</option><option value="4">Clip 4 — Inspection walkthrough</option><option value="5">Clip 5 — Knowledge check</option><option value="6">Clip 6 — Record latest reading</option></select>
+  <input id="scrub" type="range" min="0" max="1000" value="0" style="width:320px">
+  <button id="play">Play</button>
+</div>
+<script>
+  function fit(){ if(!document.body.classList.contains('viewer'))return; const s=Math.min(innerWidth/1920,innerHeight/1080); document.getElementById('stage').style.transform=`scale(${s})`; }
+  addEventListener('resize',fit); addEventListener('load',()=>setTimeout(fit,50));
+</script>
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>

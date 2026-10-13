@@ -1,0 +1,110 @@
+{
+  "generated": "2026-10-13T11:08:49.623Z",
+  "checks": [
+    {
+      "name": "Collision sweep (mesh bounding boxes, every frame of Clip 1; Clip 2 is its exact reverse)",
+      "detail": {
+        "frames": 481,
+        "pairsTested": 446915,
+        "collisions": 0
+      }
+    },
+    {
+      "name": "Clip 2 reverses Clip 1 trajectories",
+      "detail": {
+        "maxFractionError": 2.1649348980190553e-15
+      }
+    },
+    {
+      "name": "Clip 2 first frame equals Clip 1 final geometry",
+      "detail": {
+        "allExploded": true
+      }
+    },
+    {
+      "name": "Complete reassembly; Clip 3 starts assembled with guard installed",
+      "detail": {
+        "maxPosErrEndClip2": 0,
+        "maxPosErrClip3": 0
+      }
+    },
+    {
+      "name": "Motor and pump shafts share one coupling axis (assembled)",
+      "detail": {
+        "coaxialErr": 0,
+        "axisY": 1.1
+      }
+    },
+    {
+      "name": "Directly coupled shafts: identical angle and direction every frame",
+      "detail": {
+        "rotMismatch": 0,
+        "rotationRendered": false,
+        "approvedDirection": null
+      }
+    },
+    {
+      "name": "Stationary parts remain stationary in Clips 3–5 (no rotation in Clips 4–5)",
+      "detail": {
+        "violations": 0
+      }
+    },
+    {
+      "name": "Clip 4 walkthrough order 01→05, each once; no flow, no motion",
+      "detail": {
+        "order": [
+          "motor",
+          "pump",
+          "gauge",
+          "cool",
+          "rec"
+        ],
+        "flowShown": 0
+      }
+    },
+    {
+      "name": "Clip 5 asks each component once, in a different order from Clip 4; no answer shown before reveal",
+      "detail": {
+        "asked": [
+          "gauge",
+          "motor",
+          "cool",
+          "pump",
+          "rec"
+        ],
+        "leaks": 0,
+        "flow5": 0
+      }
+    },
+    {
+      "name": "Clip 6 recording round in order; no flow; no invented numeric values in the log",
+      "detail": {
+        "seq6": [
+          "pump",
+          "motor",
+          "gauge",
+          "cool",
+          "rec"
+        ],
+        "flow6": 0,
+        "numericEntries": 0
+      }
+    },
+    {
+      "name": "Flow particles inside pipe bore, no reversal or teleport; upper L→R, lower R→L",
+      "detail": {
+        "outside": 0,
+        "reversed": 0
+      }
+    },
+    {
+      "name": "Reference arrows: upper pipe left→right, lower pipe right→left",
+      "detail": {
+        "upOK": true,
+        "loOK": true
+      }
+    }
+  ],
+  "failures": [],
+  "pass": true
+}
