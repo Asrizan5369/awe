@@ -3,7 +3,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildModel, AXIS_Y, PIPE_R } from './model.js';
 import { buildFlow } from './flow.js';
 import { stateAt, durationOf, EXPLODE_ORDER, activeMover, ease, TIMING } from './timeline.js';
-import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS, INSPECTION_STEPS } from './config.js';
+import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS, INSPECTION_STEPS, QUIZ_ORDER } from './config.js';
 
 const W = 1920, H = 1080;
 const canvas = document.getElementById('c');
@@ -66,11 +66,9 @@ for (const S of INSPECTION_STEPS) {
 }
 const HIGHLIGHT = new THREE.Color(0xffffff); // neutral lift: preserves the supplied hues
 
-// Clip 4 inspection card, leader line and progress strip.
+// Clip 4/5 card and progress strip.
 const card = document.getElementById('card');
-const leader = document.getElementById('leader');
 const progress = document.getElementById('progress');
-progress.innerHTML = INSPECTION_STEPS.map((S) => `<div class="step" style="--c:${S.color}"><span class="tag" style="background:${S.color}">${S.tag}</span>${S.title}<span class="tick">✓</span></div>`).join('');
 
 // ------------------------------------------------------------------ overlays
 const labelsEl = document.getElementById('labels');
@@ -166,7 +164,7 @@ function applyState(st, doRender = true) {
       extra.push('Shaft rotation not shown: approved rotation direction and viewing convention have not been supplied.');
     }
     extra.push('Flow colours/arrows are a conceptual overlay; pipe colours do not prove fluid temperatures. No operating values shown.');
-  } else if (st.clip === 4) {
+  } else if (st.clip === 4 || st.clip === 5) {
     extra.push('Text from the reference illustration. No limits, values or OEM inspection intervals are supplied or implied.');
   } else {
     extra.push('Unverified from the image: pump type & internals, rotation direction, port duties, cooler passages, OEM sequence, operating values.');
@@ -180,41 +178,55 @@ function applyState(st, doRender = true) {
     const p = project(L.anchor);
     // Pipes/guard labelled when displaced or moving; main five always labelled.
     const isMain = ['01', '02', '03', '04', '05'].includes(L.tag);
-    const show = isMain || anyExploded || L.k === mover;
+    // Clip 5: a component's label stays hidden until its answer is revealed.
+    const show = st.clip === 5 ? isMain && st.revealed.includes(L.k) : isMain || anyExploded || L.k === mover;
     place(L.el, p, show);
     L.el.classList.toggle('active', L.k === mover);
-    const focused = st.clip === 4 && L.k === st.focus;
+    const focused = Boolean((st.clip === 4 || (st.clip === 5 && st.reveal)) && L.k === st.focus);
     L.el.classList.toggle('focus', focused);
     L.el.style.setProperty('--c', L.color);
   }
-  // Clip 4 card + leader line from card to the focused component.
-  const step = st.clip === 4 && st.focus ? INSPECTION_STEPS[st.focusIndex] : null;
+  // Clip 4 card (function + purpose) and Clip 5 card (question, then answer).
+  const step = (st.clip === 4 || st.clip === 5) && st.focus ? INSPECTION_STEPS[st.focusIndex] : null;
   card.style.display = step ? 'block' : 'none';
-  leader.style.display = 'none'; // leader removed: it crossed other components
-  progress.style.display = st.clip === 4 ? 'flex' : 'none';
+  progress.style.display = st.clip === 4 || st.clip === 5 ? 'flex' : 'none';
   if (step) {
     card.style.opacity = st.focusAmount;
-    card.style.setProperty('--c', step.color);
-    card.innerHTML = `<div class="card-h"><span class="tag" style="background:${step.color}">${step.tag}</span>${step.title}</div>
-      <div class="card-k">Function</div><div class="card-v">${step.fn}</div>
-      <div class="card-k">Inspection learning purpose</div><div class="card-v">${step.purpose}</div>`;
-    const L = LABELS.find((x) => x.k === step.k);
-    const p = project(L.anchor);
-    const line = leader.querySelector('line');
-    line.setAttribute('x1', 44 + 600); line.setAttribute('y1', 300);
-    line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
-    line.setAttribute('stroke', step.color);
-    leader.style.opacity = st.focusAmount;
+    if (st.clip === 4 || st.reveal) {
+      card.style.setProperty('--c', step.color);
+      const head = st.clip === 5 ? `<div class="card-k" style="margin:0 0 6px">Answer — Q${st.qNum}</div>` : '';
+      card.innerHTML = `${head}<div class="card-h"><span class="tag" style="background:${step.color}">${step.tag}</span>${step.title}</div>
+        <div class="card-k">Function</div><div class="card-v">${step.fn}</div>
+        <div class="card-k">${st.clip === 5 ? 'Evidence to record' : 'Inspection learning purpose'}</div><div class="card-v">${step.purpose}</div>`;
+    } else {
+      // Question: neutral colour, no name, no tag — nothing that gives the answer away.
+      card.style.setProperty('--c', '#1b2430');
+      card.innerHTML = `<div class="card-h">Question ${st.qNum} of ${QUIZ_ORDER.length}</div>
+        <div class="card-v">a) Name the highlighted component.</div>
+        <div class="card-v">b) State what you would observe or record there.</div>
+        <div class="countdown">${st.countdown}</div>`;
+    }
   }
   if (st.clip === 4) {
-    progress.querySelectorAll('.step').forEach((el, i) => {
-      el.classList.toggle('done', i < st.completed);
-      el.classList.toggle('now', i === st.focusIndex && st.focus);
-    });
-    const sum = document.getElementById('summary');
-    sum.style.display = st.summary > 0 ? 'block' : 'none';
-    sum.style.opacity = st.summary;
-  } else document.getElementById('summary').style.display = 'none';
+    progress.innerHTML = INSPECTION_STEPS.map((S, i) => `<div class="step${i < st.completed ? ' done' : ''}${i === st.focusIndex && st.focus ? ' now' : ''}" style="--c:${S.color}"><span class="tag" style="background:${S.color}">${S.tag}</span>${S.title}<span class="tick">✓</span></div>`).join('');
+  } else if (st.clip === 5) {
+    progress.innerHTML = QUIZ_ORDER.map((_, i) => {
+      const done = i < st.revealed.length, now = st.qNum === i + 1;
+      return `<div class="step${done ? ' done' : ''}${now ? ' now' : ''}" style="--c:#1b2430">Q${i + 1}<span class="tick">✓</span></div>`;
+    }).join('');
+  }
+  // Clip 5 question marker: shows WHICH component is asked about without naming it.
+  const qm = document.getElementById('qmark');
+  if (st.clip === 5 && step && !st.reveal) {
+    place(qm, project(LABELS.find((x) => x.k === step.k).anchor), true);
+    qm.style.opacity = st.focusAmount;
+  } else qm.style.display = 'none';
+  const sum = document.getElementById('summary');
+  sum.style.display = (st.clip === 4 || st.clip === 5) && st.summary > 0 ? 'block' : 'none';
+  sum.style.opacity = st.summary;
+  sum.innerHTML = st.clip === 5
+    ? `<b>Self-assessment</b>1 mark for each correct name and 1 mark for each correct evidence statement, giving a total out of ${QUIZ_ORDER.length * 2}. Review any items you missed in Clip 4.`
+    : `<b>Walkthrough complete</b>Each observation links a component's function to the evidence recorded: point, value, unit, time, reference, uncertainty, and the authorised person informed at handover.`;
   place(notes.pump, project(groups.pump.children.find((c) => c.name === 'Pump_Casing'), 0, -0.95, 0.8), st.clip === 3);
   place(notes.cool, project(groups.cool.children.find((c) => c.name === 'CoolingModule_HeaderBottom'), 0.2, -0.75, 0.8), st.clip === 3);
   place(notes.guard, project(groups.guard.children.find((c) => c.name === 'CouplingGuard_Top'), -1.6, -2.15, 1.6), st.clip === 3 && st.guardOverlay > 0.5);
@@ -319,14 +331,17 @@ window.verify = () => {
   // 7. Housings, guard, pipes, gauge, cooler, base stationary in Clips 3 and 4.
   let moved = 0;
   const frames4 = Math.round(durationOf(4) * FPS);
-  const frames34 = [...Array(frames3 + 1).keys()].map((f) => [3, f]).concat([...Array(frames4 + 1).keys()].map((f) => [4, f]));
+  const frames5 = Math.round(durationOf(5) * FPS);
+  const frames34 = [...Array(frames3 + 1).keys()].map((f) => [3, f])
+    .concat([...Array(frames4 + 1).keys()].map((f) => [4, f]))
+    .concat([...Array(frames5 + 1).keys()].map((f) => [5, f]));
   for (const [c, f] of frames34) {
     applyState(stateAt(c, f / FPS), false);
     for (const r of rotating) if (r.rotation.x) moved++;
     for (const k of allKeys) if (groups[k].position.distanceTo(home[k]) > 0 || groups[k].rotation.x || groups[k].rotation.y || groups[k].rotation.z) moved++;
   }
   if (moved) fail('A stationary component moved in Clip 3');
-  ok('Stationary parts remain stationary in Clips 3 and 4 (and no rotation in Clip 4)', { violations: moved });
+  ok('Stationary parts remain stationary in Clips 3–5 (no rotation in Clips 4–5)', { violations: moved });
 
   // 7b. Clip 4: every inspection step shown once, in order 01..05, no flow or motion.
   const order = [];
@@ -340,6 +355,21 @@ window.verify = () => {
   if (JSON.stringify(order) !== JSON.stringify(expected)) fail('Clip 4 inspection order incorrect: ' + order.join(','));
   if (flowShown) fail('Flow shown in Clip 4');
   ok('Clip 4 walkthrough order 01→05, each once; no flow, no motion', { order, flowShown });
+
+  // 7c. Clip 5: every component asked once; answer never visible before its reveal.
+  const asked = [];
+  let leaks = 0, flow5 = 0;
+  for (let f = 0; f <= frames5; f++) {
+    const st = stateAt(5, f / FPS);
+    if (st.focus && asked[asked.length - 1] !== st.focus) asked.push(st.focus);
+    if (st.focus && !st.reveal && st.revealed.includes(st.focus)) leaks++;
+    if (st.flowOpacity > 0 || st.flowRunning) flow5++;
+  }
+  if ([...asked].sort().join() !== [...expected].sort().join() || asked.length !== expected.length) fail('Clip 5 does not ask each component exactly once');
+  if (JSON.stringify(asked) === JSON.stringify(expected)) fail('Clip 5 order matches Clip 4 (answerable by sequence)');
+  if (leaks) fail('Clip 5 shows an answer before its reveal');
+  if (flow5) fail('Flow shown in Clip 5');
+  ok('Clip 5 asks each component once, in a different order from Clip 4; no answer shown before reveal', { asked, leaks, flow5 });
 
   // 8. Flow particles: inside pipe bore, monotonic direction, matching reference arrows.
   let outside = 0, reversed = 0;

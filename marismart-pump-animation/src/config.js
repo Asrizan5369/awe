@@ -40,6 +40,7 @@ export const CLIPS = {
   2: { id: 2, name: 'Clip 2 — Conceptual reassembly', duration: 14 },
   3: { id: 3, name: 'Clip 3 — Mechanical motion and flow', duration: 14 },
   4: { id: 4, name: 'Clip 4 — Inspection walkthrough: function to evidence', duration: 29 },
+  5: { id: 5, name: 'Clip 5 — Knowledge check: identify and record', duration: 38 },
 };
 
 // Clip 4 card text, taken from the reference illustration's five cards.
@@ -60,3 +61,6 @@ export const INSPECTION_STEPS = [
     fn: 'Connects observations to the inspection record.',
     purpose: 'Record findings, uncertainty, source references and the authorised person informed.' },
 ];
+
+// Clip 5 asks in a different order from Clip 4 so learners cannot answer by sequence.
+export const QUIZ_ORDER = [2, 0, 3, 1, 4]; // indices into INSPECTION_STEPS

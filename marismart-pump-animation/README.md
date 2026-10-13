@@ -1,4 +1,4 @@
-# MARISMART AR: pump skid learning model (4 clips + GLB)
+# MARISMART AR: pump skid learning model (5 clips + GLB)
 
 This is an illustrative learning model built from a 2D illustration titled "2D inspection studio". It is **not** an approved maintenance, installation or operating procedure, and it has **not** been validated technically from the image alone.
 
@@ -10,6 +10,7 @@ This is an illustrative learning model built from a 2D illustration titled "2D i
 | `MARISMART_Clip2_Conceptual_Reassembly.mp4` | 14 s. The exact time-reverse of the Clip 1 trajectories, ending in the reference layout with the guard installed. |
 | `MARISMART_Clip3_Mechanical_Motion_and_Flow.mp4` | 14 s. The guard stays installed and is shown as a transparent teaching overlay, with a conceptual flow overlay. **No shaft rotation** (see the gate below). |
 | `MARISMART_Clip4_Inspection_Walkthrough.mp4` | 29 s. Assembled, stopped and isolated, with no motion or flow. The five components 01–05 are taken in turn. Each one is lightly highlighted in its own colour, with a card showing its **Function** and **Inspection learning purpose** (text taken from the reference image). A progress strip ticks off each step, and a summary closes the clip. No limits, values or inspection intervals are shown. |
+| `MARISMART_Clip5_Knowledge_Check.mp4` | 38 s. A formative self-check with five questions, asked in a different order from Clip 4 (03, 01, 04, 02, 05). For each, a "?" marks the component while its label stays hidden. A 3-second countdown asks the learner to (a) name the component and (b) state the evidence to record. The answer card and label are then revealed. A self-assessment closes the clip (1 + 1 marks per item, total out of 10). |
 | `MARISMART_PumpSkid_LearningModel.glb` | The same geometry as named nodes, with translation tracks `Clip1_ConceptualDisassembly` and `Clip2_ConceptualReassembly`. It has no rotation track. |
 | `verification_report.json` | Automated checks. If any check fails, the renderer refuses to produce clips. |
 | `stills/` | Key frames for review. |
@@ -48,6 +49,7 @@ Both shaft assemblies and the two coupling halves are driven by **one** angle. T
 - The shafts are coaxial. Directly coupled parts always share an identical angle. No rotation is rendered without approval.
 - The housings, guard, pipes, gauge, cooler and base stay stationary in Clips 3 and 4.
 - Clip 4 visits 01→05 once each, in order, with no flow and no rotation.
+- Clip 5 asks about each component once, in an order different from Clip 4. No answer or label appears before its reveal, and there is no flow or rotation.
 - Flow particles stay inside the pipe bore. They never reverse or teleport, and they match the reference arrows. They are never routed through the motor, coupling, guard or gauge.
 
 ## Rebuild

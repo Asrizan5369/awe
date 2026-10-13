@@ -2,7 +2,7 @@
 // Clip 2 is computed as the exact time-reverse of Clip 1's movement phase, so
 // every reassembly trajectory is the disassembly trajectory run backwards.
 
-import { CLIPS, INSPECTION_STEPS } from './config.js';
+import { CLIPS, INSPECTION_STEPS, QUIZ_ORDER } from './config.js';
 
 // Disassembly order: only external subassemblies, translations only.
 export const EXPLODE_ORDER = ['guard', 'gauge', 'up', 'lo', 'motor', 'pump', 'cool'];
@@ -86,9 +86,33 @@ export function stateAt(clip, t) {
     st.summary = t >= INSPECT_END ? clamp01((t - INSPECT_END) / 0.5) : 0;
     st.status = 'System stopped and isolated (conceptual) — external observation only';
     st.caption = 'Inspection learning walkthrough — illustrative; not an approved inspection procedure.';
+  } else if (clip === 5) {
+    // Static, assembled, stopped. Highlight -> question + countdown (label hidden) -> reveal.
+    for (const k of EXPLODE_ORDER) st.explode[k] = 0;
+    const i = Math.floor((t - QUIZ_START) / QUIZ_EACH);
+    let answered = Math.max(0, Math.min(QUIZ_ORDER.length, i));
+    if (t >= QUIZ_START && i < QUIZ_ORDER.length) {
+      const local = t - QUIZ_START - i * QUIZ_EACH;
+      st.focusIndex = QUIZ_ORDER[i];
+      st.focus = INSPECTION_STEPS[st.focusIndex].k;
+      st.qNum = i + 1;
+      st.focusAmount = Math.min(clamp01(local / 0.4), clamp01((QUIZ_EACH - local) / 0.4));
+      st.reveal = local >= QUIZ_ASK;
+      st.countdown = st.reveal ? 0 : Math.ceil(QUIZ_ASK - local);
+      if (st.reveal) answered = i + 1;
+    }
+    st.revealed = QUIZ_ORDER.slice(0, answered).map((j) => INSPECTION_STEPS[j].k);
+    st.summary = t >= QUIZ_END ? clamp01((t - QUIZ_END) / 0.5) : 0;
+    st.status = 'System stopped and isolated (conceptual) — external observation only';
+    st.caption = 'Knowledge check — pause the video if you need more time before the reveal.';
   }
   return st;
 }
+
+const QUIZ_START = 2.0;
+const QUIZ_EACH = 6.5;
+const QUIZ_ASK = 3.5;
+const QUIZ_END = QUIZ_START + QUIZ_ORDER.length * QUIZ_EACH;
 
 const INSPECT_START = 2.5;
 const INSPECT_EACH = 4.6;
@@ -98,4 +122,4 @@ export function durationOf(clip) {
   return CLIPS[clip].duration;
 }
 
-export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START, INSPECT_START, INSPECT_EACH, INSPECT_END };
+export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START, INSPECT_START, INSPECT_EACH, INSPECT_END, QUIZ_START, QUIZ_EACH, QUIZ_ASK, QUIZ_END };

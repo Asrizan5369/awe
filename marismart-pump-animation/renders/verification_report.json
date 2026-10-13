@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-13T07:09:48.833Z",
+  "generated": "2026-10-13T07:17:58.458Z",
   "checks": [
     {
       "name": "Collision sweep (mesh bounding boxes, every frame of Clip 1; Clip 2 is its exact reverse)",
@@ -44,7 +44,7 @@
       }
     },
     {
-      "name": "Stationary parts remain stationary in Clips 3 and 4 (and no rotation in Clip 4)",
+      "name": "Stationary parts remain stationary in Clips 3–5 (no rotation in Clips 4–5)",
       "detail": {
         "violations": 0
       }
@@ -60,6 +60,20 @@
           "rec"
         ],
         "flowShown": 0
+      }
+    },
+    {
+      "name": "Clip 5 asks each component once, in a different order from Clip 4; no answer shown before reveal",
+      "detail": {
+        "asked": [
+          "gauge",
+          "motor",
+          "cool",
+          "pump",
+          "rec"
+        ],
+        "leaks": 0,
+        "flow5": 0
       }
     },
     {
