@@ -1,0 +1,69 @@
+{
+  "generated": "2026-10-13T06:53:10.501Z",
+  "checks": [
+    {
+      "name": "Collision sweep (mesh bounding boxes, every frame of Clip 1; Clip 2 is its exact reverse)",
+      "detail": {
+        "frames": 481,
+        "pairsTested": 446915,
+        "collisions": 0
+      }
+    },
+    {
+      "name": "Clip 2 reverses Clip 1 trajectories",
+      "detail": {
+        "maxFractionError": 2.1649348980190553e-15
+      }
+    },
+    {
+      "name": "Clip 2 first frame equals Clip 1 final geometry",
+      "detail": {
+        "allExploded": true
+      }
+    },
+    {
+      "name": "Complete reassembly; Clip 3 starts assembled with guard installed",
+      "detail": {
+        "maxPosErrEndClip2": 0,
+        "maxPosErrClip3": 0
+      }
+    },
+    {
+      "name": "Motor and pump shafts share one coupling axis (assembled)",
+      "detail": {
+        "coaxialErr": 0,
+        "axisY": 1.1
+      }
+    },
+    {
+      "name": "Directly coupled shafts: identical angle and direction every frame",
+      "detail": {
+        "rotMismatch": 0,
+        "rotationRendered": false,
+        "approvedDirection": null
+      }
+    },
+    {
+      "name": "Stationary parts remain stationary in Clip 3",
+      "detail": {
+        "violations": 0
+      }
+    },
+    {
+      "name": "Flow particles inside pipe bore, no reversal or teleport; upper L→R, lower R→L",
+      "detail": {
+        "outside": 0,
+        "reversed": 0
+      }
+    },
+    {
+      "name": "Reference arrows: upper pipe left→right, lower pipe right→left",
+      "detail": {
+        "upOK": true,
+        "loOK": true
+      }
+    }
+  ],
+  "failures": [],
+  "pass": true
+}
