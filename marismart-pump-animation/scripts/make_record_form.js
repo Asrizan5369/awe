@@ -3,53 +3,9 @@
 // Usage: node scripts/make_record_form.js
 const fs = require('fs');
 const path = require('path');
-const {
-  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ShadingType,
-  AlignmentType, HeightRule, BorderStyle, Footer, Header, PageNumber, PageBreak, VerticalAlign,
-  LevelFormat, TabStopType,
-} = require('docx');
+const { Document, Packer, Paragraph, TextRun, ShadingType, AlignmentType, PageBreak } = require('docx');
 
-const OUT = path.join(__dirname, '..', 'docs');
-fs.mkdirSync(OUT, { recursive: true });
-
-const FONT = 'Arial';
-const W = 9906; // A4 width 11906 minus 2 x 1000 margins (DXA)
-const C = { ink: '1B2430', muted: '55606E', head: 'E8ECF1', soft: 'F6F8FA', warn: 'FFF4D6',
-  s01: '1F5FB8', s02: '2E9B4F', s03: 'D23B33', s04: 'F08A00', s05: '6A3FB5' };
-const border = { style: BorderStyle.SINGLE, size: 4, color: '9AA3AB' };
-const borders = { top: border, bottom: border, left: border, right: border };
-
-function runs(text, o = {}) {
-  // "Malay (English)" pattern: English part rendered smaller and muted.
-  const m = /^(.*?)( \(([^)]*)\))$/.exec(text);
-  if (m && o.bilingual !== false) {
-    return [new TextRun({ text: m[1], bold: o.bold, size: o.size || 19, color: o.color || C.ink, font: FONT }),
-      new TextRun({ text: ` (${m[3]})`, italics: true, size: (o.size || 19) - 3, color: o.color || C.muted, font: FONT })];
-  }
-  return [new TextRun({ text, bold: o.bold, italics: o.italics, size: o.size || 19, color: o.color || C.ink, font: FONT })];
-}
-function p(text, o = {}) {
-  return new Paragraph({ spacing: { before: o.before ?? 0, after: o.after ?? 60 }, alignment: o.align,
-    children: Array.isArray(text) ? text : runs(text, o), numbering: o.bullet ? { reference: 'bul', level: 0 } : undefined,
-    border: o.rule ? { bottom: { style: BorderStyle.SINGLE, size: 8, color: C.ink, space: 2 } } : undefined });
-}
-function cell(content, w, o = {}) {
-  const paras = (Array.isArray(content) ? content : [content]).map((t) => (t instanceof Paragraph ? t : p(t, o)));
-  return new TableCell({ width: { size: w, type: WidthType.DXA }, borders, verticalAlign: o.valign || VerticalAlign.TOP,
-    shading: o.fill ? { fill: o.fill, type: ShadingType.CLEAR, color: 'auto' } : undefined,
-    margins: { top: 60, bottom: 60, left: 100, right: 100 }, columnSpan: o.span, children: paras });
-}
-function table(widths, rows) {
-  return new Table({ width: { size: widths.reduce((a, b) => a + b, 0), type: WidthType.DXA }, columnWidths: widths,
-    rows: rows.map((r) => new TableRow({ cantSplit: true, height: r.h ? { value: r.h, rule: HeightRule.ATLEAST } : undefined,
-      tableHeader: r.header, children: r.cells })) });
-}
-function heading(text, color = C.ink) {
-  return new Paragraph({ spacing: { before: 200, after: 100 }, keepNext: true,
-    border: { bottom: { style: BorderStyle.SINGLE, size: 12, color, space: 2 } },
-    children: [new TextRun({ text, bold: true, size: 24, color, font: FONT })] });
-}
-const blank = (w, o = {}) => cell('', w, o);
+const { OUT, FONT, W, C, p, cell, table, heading, blank, NUMBERING, PAGE, pageHeader, pageFooter } = require('./docx_common');
 
 // ---------------------------------------------------------------- content
 const header = [
@@ -181,8 +137,9 @@ const score = table(sW, [
 
 const decision = table([W], [{ cells: [cell([
   p('Keputusan kompetensi (Competency decision). Cadangan; sesuaikan dengan dasar program.', { bold: true, size: 19 }),
-  p('KOMPETEN: jumlah ≥ 60, DAN C2 (keselamatan) serta C4 (data) sekurang-kurangnya Tahap 3.', { bullet: true, size: 18, bilingual: false }),
+  p('KOMPETEN: jumlah rubrik ≥ 60, DAN C2 (keselamatan) serta C4 (data) sekurang-kurangnya Tahap 3.', { bullet: true, size: 18, bilingual: false }),
   p('BELUM KOMPETEN: jika mana-mana syarat di atas tidak dipenuhi. Sebarang tindakan tidak selamat (C2 Tahap 1) menjadikan keputusan BELUM KOMPETEN, tanpa mengira jumlah markah.', { bullet: true, size: 18, bilingual: false }),
+  p('Markah akhir komponen = 0.8 × Jumlah rubrik (/100) + Refleksi (/20). Lihat Pek Penilaian (JSU) untuk butiran.', { size: 17, color: C.muted, before: 40, bilingual: false }),
   p('☐ Kompeten (Competent)        ☐ Belum kompeten (Not yet competent)', { size: 19, before: 80 }),
   p('Penilai (Assessor): ______________________   Tandatangan: ______________   Tarikh: ____ / ____ / ______', { size: 18, before: 160, bilingual: false }),
 ], W, { fill: C.soft })] }]);
@@ -196,24 +153,19 @@ const alignment = table(alignW, [
 ]);
 
 const reflW = [W];
-const reflection = table(reflW, ['1. Apakah sumber ketidakpastian terbesar dalam bacaan anda, dan bagaimana anda mengawalnya?',
-  '2. Mengapakah anda tidak boleh menilai bacaan sebagai "normal" tanpa had yang diluluskan?',
-  '3. Apakah maklumat yang paling penting untuk disampaikan semasa serahan kepada orang diberi kuasa?']
+const reflection = table(reflW, ['R1. Apakah sumber ketidakpastian terbesar dalam bacaan anda, dan bagaimana anda mengawalnya? [8 markah]',
+  'R2. Mengapakah anda tidak boleh menilai bacaan sebagai "normal" tanpa had yang diluluskan? [6 markah]',
+  'R3. Apakah maklumat yang paling penting untuk disampaikan semasa serahan kepada orang diberi kuasa? [6 markah]']
   .map((q) => ({ h: 1000, cells: [cell([p(q, { size: 18, bold: true, bilingual: false })], W)] })));
 
 const doc = new Document({
   creator: 'MARISMART AR', title: 'Borang Rekod Pemeriksaan dan Rubrik Penilaian',
-  numbering: { config: [{ reference: 'bul', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT,
-    style: { paragraph: { indent: { left: 360, hanging: 240 } } } }] }] },
+  numbering: NUMBERING,
   styles: { default: { document: { run: { font: FONT, size: 19 } } } },
   sections: [{
-    properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 900, bottom: 900, left: 1000, right: 1000 } } },
-    headers: { default: new Header({ children: [p([new TextRun({ text: 'MARISMART AR — Borang Rekod Pemeriksaan & Rubrik', size: 14, color: C.muted, font: FONT })], { align: AlignmentType.RIGHT })] }) },
-    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [
-      new TextRun({ text: 'Model pembelajaran ilustratif: isikan nilai sebenar dari instrumen sebenar; ikut prosedur tapak dan had yang diluluskan.   Halaman ', size: 14, color: C.muted, font: FONT }),
-      new TextRun({ children: [PageNumber.CURRENT], size: 14, color: C.muted, font: FONT }),
-      new TextRun({ text: ' / ', size: 14, color: C.muted, font: FONT }),
-      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 14, color: C.muted, font: FONT })] })] }) },
+    properties: { page: PAGE },
+    headers: { default: pageHeader('MARISMART AR — Borang Rekod Pemeriksaan & Rubrik') },
+    footers: { default: pageFooter('Model pembelajaran ilustratif: isikan nilai sebenar dari instrumen sebenar; ikut prosedur tapak dan had yang diluluskan.') },
     children: [
       ...header, idTable, p('', { after: 80 }), safety,
       heading('Bahagian A — Rekod pemeriksaan (sama seperti medan Klip 6)'),
