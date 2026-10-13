@@ -41,6 +41,7 @@ export const CLIPS = {
   3: { id: 3, name: 'Clip 3 — Mechanical motion and flow', duration: 14 },
   4: { id: 4, name: 'Clip 4 — Inspection walkthrough: function to evidence', duration: 29 },
   5: { id: 5, name: 'Clip 5 — Knowledge check: identify and record', duration: 38 },
+  6: { id: 6, name: 'Clip 6 — Taking and recording the latest reading', duration: 37 },
 };
 
 // Clip 4 card text, taken from the reference illustration's five cards.
@@ -64,3 +65,24 @@ export const INSPECTION_STEPS = [
 
 // Clip 5 asks in a different order from Clip 4 so learners cannot answer by sequence.
 export const QUIZ_ORDER = [2, 0, 3, 1, 4]; // indices into INSPECTION_STEPS
+
+// Clip 6: one inspection round, recorded into a log. Field entries are FORMATS,
+// never numbers: the reference supplies no operating values or limits.
+// (A verification check rejects any digit in these entries.)
+export const RECORD_STEPS = [
+  { k: 'pump', tag: '02', title: 'Prepare: identify the equipment', color: '#2e9b4f',
+    action: 'Confirm the equipment tag, task scope and authorised observation points before approaching.',
+    fields: [['Equipment tag', 'as on the site tag plate'], ['Task scope', 'external observation only'], ['Observation points', 'as briefed by the supervisor']] },
+  { k: 'motor', tag: '01', title: 'Safe access: drive and guard', color: '#1f5fb8',
+    action: 'Observe only the permitted external condition. Verify safe access and that guarding is in place.',
+    fields: [['Guard in place', 'Yes / No, tick as observed'], ['External condition', 'describe what is seen; no contact']] },
+  { k: 'gauge', tag: '03', title: 'Take the reading: pressure indicator', color: '#d23b33',
+    action: 'Read at eye level, square to the dial, to avoid parallax. Record point, value, unit, time and reference.',
+    fields: [['Point', 'pressure indicator, upper pipe tapping'], ['Value', 'enter exactly as read'], ['Unit', 'as marked on the dial'], ['Time', 'hh:mm'], ['Reference', 'instrument tag / procedure ref.']] },
+  { k: 'cool', tag: '04', title: 'Cooling circuit observations', color: '#f08a00',
+    action: 'Identify where approved temperature and water observations would be recorded. None are approved in this model.',
+    fields: [['Temperature / water points', 'only where approved; not supplied here']] },
+  { k: 'rec', tag: '05', title: 'Record and hand over', color: '#6a3fb5',
+    action: 'Complete the record and inform the authorised person. This entry becomes the latest data for the next watch.',
+    fields: [['Findings', 'as found; describe any abnormality'], ['Uncertainty', 'e.g. parallax, scale resolution'], ['Source references', 'drawing / manual / procedure'], ['Authorised person informed', 'name and time'], ['Observer signature', 'student name / ID']] },
+];

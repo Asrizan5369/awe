@@ -34,6 +34,24 @@
   #summary { display:none; position:absolute; left:44px; top:150px; width:600px; box-sizing:border-box; background:#fff; border:1px solid var(--line); border-left:8px solid #6a3fb5; border-radius:12px; padding:18px 22px; font-size:22px; line-height:1.4; box-shadow:0 6px 20px rgba(0,0,0,.10); }
   #qmark { display:none; position:absolute; transform:translate(-50%,-100%); width:64px; height:64px; border-radius:50%; background:#1b2430; color:#fff; font-size:42px; font-weight:800; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(255,255,255,.85), 0 4px 14px rgba(0,0,0,.25); }
   .countdown { font-size:64px; font-weight:800; color:#9b2c3a; margin-top:10px; }
+  #log { display:none; position:absolute; left:44px; top:128px; width:600px; box-sizing:border-box; background:#fffef8; border:1px solid #d9d2b8; border-radius:10px; padding:14px 18px; box-shadow:0 6px 20px rgba(0,0,0,.10); font-size:16px; }
+  .log-h { font-size:23px; font-weight:700; border-bottom:2px solid #1b2430; padding-bottom:6px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:baseline; }
+  .log-h span { font-size:14px; font-weight:600; color:var(--muted); }
+  .log-sec { display:flex; align-items:center; gap:8px; margin-top:8px; font-weight:700; font-size:16px; opacity:.45; }
+  .log-sec .tag { font-size:13px; padding:2px 7px; }
+  .log-sec.now, .log-sec.done { opacity:1; } .log-sec.now { color:var(--c); }
+  .log-sec .tick { color:#2e9b4f; margin-left:auto; font-weight:800; }
+  .log-row { display:grid; grid-template-columns:220px 1fr; border-bottom:1px dotted #cfc8ae; padding:3px 0; min-height:22px; }
+  .log-row > div:first-child { color:#55606e; }
+  .log-row.meta .hand, .log-row.meta > div:last-child { color:#55606e; font-style:italic; }
+  .log-row.writing { background:#fff3c4; }
+  .hand { color:#1846a3; font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive; }
+  .cur { color:#1846a3; font-weight:700; }
+  #action { display:none; position:absolute; left:680px; top:128px; right:400px; background:#fff; border:1px solid var(--line); border-left:8px solid var(--c); border-radius:10px; padding:12px 16px; font-size:21px; line-height:1.35; box-shadow:0 4px 14px rgba(0,0,0,.08); }
+  #action b { color:var(--c); }
+  #inset { display:none; position:absolute; left:1552px; top:124px; width:320px; height:320px; border:4px solid #d23b33; border-radius:10px; pointer-events:none; }
+  #inset div { position:absolute; left:0; right:0; top:100%; margin-top:8px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:16px; line-height:1.3; }
+  #summary.wide { left:680px; width:700px; top:128px; }
   #summary b { font-size:28px; display:block; margin-bottom:8px; }
   #controls { display:none; position:fixed; left:12px; bottom:12px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px; gap:8px; align-items:center; font-size:14px; z-index:5; }
   body.viewer #controls { display:flex; }
@@ -50,6 +68,9 @@
   <div id="qmark">?</div>
   <div id="progress"></div>
   <div id="summary"></div>
+  <div id="log"></div>
+  <div id="action"></div>
+  <div id="inset"><div><b>Close-up, square to the dial.</b> Read the scale and unit marked on the actual instrument. This model's dial is unmarked: no values are supplied.</div></div>
   <div id="hud-top">
     <div><div class="eyebrow">MARISMART AR · Visual learning · Illustrative model</div><div id="clipname"></div></div>
     <div id="status"></div>
@@ -57,7 +78,7 @@
   <div id="hud-bottom"><div id="caption"></div><div id="extra"></div></div>
 </div>
 <div id="controls">
-  <select id="clipSel"><option value="1">Clip 1 — Disassembly</option><option value="2">Clip 2 — Reassembly</option><option value="3">Clip 3 — Motion &amp; flow</option><option value="4">Clip 4 — Inspection walkthrough</option><option value="5">Clip 5 — Knowledge check</option></select>
+  <select id="clipSel"><option value="1">Clip 1 — Disassembly</option><option value="2">Clip 2 — Reassembly</option><option value="3">Clip 3 — Motion &amp; flow</option><option value="4">Clip 4 — Inspection walkthrough</option><option value="5">Clip 5 — Knowledge check</option><option value="6">Clip 6 — Record latest reading</option></select>
   <input id="scrub" type="range" min="0" max="1000" value="0" style="width:320px">
   <button id="play">Play</button>
 </div>

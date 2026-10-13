@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-13T07:17:58.458Z",
+  "generated": "2026-10-13T11:08:49.623Z",
   "checks": [
     {
       "name": "Collision sweep (mesh bounding boxes, every frame of Clip 1; Clip 2 is its exact reverse)",
@@ -74,6 +74,20 @@
         ],
         "leaks": 0,
         "flow5": 0
+      }
+    },
+    {
+      "name": "Clip 6 recording round in order; no flow; no invented numeric values in the log",
+      "detail": {
+        "seq6": [
+          "pump",
+          "motor",
+          "gauge",
+          "cool",
+          "rec"
+        ],
+        "flow6": 0,
+        "numericEntries": 0
       }
     },
     {

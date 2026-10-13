@@ -2,7 +2,7 @@
 // Clip 2 is computed as the exact time-reverse of Clip 1's movement phase, so
 // every reassembly trajectory is the disassembly trajectory run backwards.
 
-import { CLIPS, INSPECTION_STEPS, QUIZ_ORDER } from './config.js';
+import { CLIPS, INSPECTION_STEPS, QUIZ_ORDER, RECORD_STEPS } from './config.js';
 
 // Disassembly order: only external subassemblies, translations only.
 export const EXPLODE_ORDER = ['guard', 'gauge', 'up', 'lo', 'motor', 'pump', 'cool'];
@@ -105,9 +105,32 @@ export function stateAt(clip, t) {
     st.summary = t >= QUIZ_END ? clamp01((t - QUIZ_END) / 0.5) : 0;
     st.status = 'System stopped and isolated (conceptual) — external observation only';
     st.caption = 'Knowledge check — pause the video if you need more time before the reveal.';
+  } else if (clip === 6) {
+    // Static, assembled, stopped. One step at a time; the log fills field by field.
+    for (const k of EXPLODE_ORDER) st.explode[k] = 0;
+    const i = Math.floor((t - REC_START) / REC_EACH);
+    st.recDone = Math.max(0, Math.min(RECORD_STEPS.length, i));
+    st.recStep = -1;
+    if (t >= REC_START && i < RECORD_STEPS.length) {
+      const local = t - REC_START - i * REC_EACH;
+      st.recStep = i;
+      st.focus = RECORD_STEPS[i].k;
+      st.focusAmount = Math.min(clamp01(local / 0.4), clamp01((REC_EACH - local) / 0.4));
+      // Each field "writes" in turn between 1.2 s and 5.8 s of the step.
+      const n = RECORD_STEPS[i].fields.length;
+      st.fieldProgress = RECORD_STEPS[i].fields.map((_, j) => clamp01((local - 1.2 - (j * 4.6) / n) / (4.6 / n)));
+    }
+    st.inset = st.focus === 'gauge' ? st.focusAmount : 0;
+    st.summary = t >= REC_END ? clamp01((t - REC_END) / 0.5) : 0;
+    st.status = 'System stopped and isolated (conceptual) — external observation only';
+    st.caption = 'Recording the latest reading — format only; this model supplies no values or limits.';
   }
   return st;
 }
+
+const REC_START = 2.0;
+const REC_EACH = 6.4;
+const REC_END = REC_START + RECORD_STEPS.length * REC_EACH;
 
 const QUIZ_START = 2.0;
 const QUIZ_EACH = 6.5;
@@ -122,4 +145,4 @@ export function durationOf(clip) {
   return CLIPS[clip].duration;
 }
 
-export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START, INSPECT_START, INSPECT_EACH, INSPECT_END, QUIZ_START, QUIZ_EACH, QUIZ_ASK, QUIZ_END };
+export const TIMING = { MOVE_START, MOVE_EACH, MOVE_GAP, MOVE_END, REASSEMBLY_START, INSPECT_START, INSPECT_EACH, INSPECT_END, QUIZ_START, QUIZ_EACH, QUIZ_ASK, QUIZ_END, REC_START, REC_EACH, REC_END };

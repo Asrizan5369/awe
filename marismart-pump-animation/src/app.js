@@ -3,7 +3,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildModel, AXIS_Y, PIPE_R } from './model.js';
 import { buildFlow } from './flow.js';
 import { stateAt, durationOf, EXPLODE_ORDER, activeMover, ease, TIMING } from './timeline.js';
-import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS, INSPECTION_STEPS, QUIZ_ORDER } from './config.js';
+import { TECHNICAL, ILLUSTRATIVE_REV_PER_SECOND, CLIPS, FPS, INSPECTION_STEPS, QUIZ_ORDER, RECORD_STEPS } from './config.js';
 
 const W = 1920, H = 1080;
 const canvas = document.getElementById('c');
@@ -30,6 +30,27 @@ scene.add(floor);
 const camera = new THREE.PerspectiveCamera(27, W / H, 0.1, 200);
 camera.position.set(4.2, 8.2, 19.5);
 camera.lookAt(0.55, 2.0, -0.2);
+// Clip 6 uses a second fixed framing (scene shifted right) to leave room for the log sheet.
+// It never changes within a clip.
+const CAM_BASE = { pos: new THREE.Vector3(4.2, 8.2, 19.5), target: new THREE.Vector3(0.55, 2.0, -0.2) };
+let framedFor = null;
+function frameFor(clip) {
+  const key = clip === 6 ? 6 : 0;
+  if (framedFor === key) return;
+  framedFor = key;
+  // Clip 6: pan the camera left (scene appears right) and widen slightly. Pure translation of
+  // camera + target, so the viewing direction is identical to the other clips.
+  const pan = key === 6 ? -2.6 : 0, lift = key === 6 ? -0.2 : 0;
+  const right = new THREE.Vector3().subVectors(CAM_BASE.target, CAM_BASE.pos).cross(new THREE.Vector3(0, 1, 0)).normalize();
+  const d = right.multiplyScalar(pan).add(new THREE.Vector3(0, lift, 0));
+  camera.position.copy(CAM_BASE.pos).add(d);
+  camera.fov = key === 6 ? 34 : 27;
+  camera.updateProjectionMatrix();
+  camera.lookAt(CAM_BASE.target.clone().add(d));
+}
+// Close-up inset camera for the pressure indicator dial (Clip 6, reading step).
+const insetCam = new THREE.PerspectiveCamera(22, 1, 0.05, 50);
+const INSET = { x: 1556, y: 128, w: 320, h: 320 };
 
 const { root, groups, rotating } = buildModel();
 scene.add(root);
@@ -123,6 +144,7 @@ function rotationAllowed() {
 }
 
 function applyState(st, doRender = true) {
+  frameFor(st.clip);
   for (const k of EXPLODE_ORDER) {
     const g = groups[k];
     const off = g.userData.explode;
@@ -146,6 +168,12 @@ function applyState(st, doRender = true) {
   }
   flow.update(st.t, st.flowOpacity, st.flowRunning);
 
+  // Record board ticks: in Clip 6 they fill as steps are completed; elsewhere as in the reference.
+  const ticked = st.clip === 6 ? Math.min(4, st.recDone) : 3;
+  for (let i = 0; i < 4; i++) {
+    const m = groups.rec.getObjectByName('RecordHandover_Checkbox_' + i).material;
+    m.color.set(i < ticked ? 0x6a3fb5 : 0x8e959c);
+  }
   for (const S of INSPECTION_STEPS) {
     const a = st.focus === S.k ? 0.22 * st.focusAmount : 0;
     for (const m of focusMats[S.k]) { m.emissive.copy(HIGHLIGHT); m.emissiveIntensity = a; }
@@ -164,6 +192,8 @@ function applyState(st, doRender = true) {
       extra.push('Shaft rotation not shown: approved rotation direction and viewing convention have not been supplied.');
     }
     extra.push('Flow colours/arrows are a conceptual overlay; pipe colours do not prove fluid temperatures. No operating values shown.');
+  } else if (st.clip === 6) {
+    extra.push('Entries show the required format. Students enter real values from the actual instrument; no values, limits or trends are implied.');
   } else if (st.clip === 4 || st.clip === 5) {
     extra.push('Text from the reference illustration. No limits, values or OEM inspection intervals are supplied or implied.');
   } else {
@@ -179,10 +209,13 @@ function applyState(st, doRender = true) {
     // Pipes/guard labelled when displaced or moving; main five always labelled.
     const isMain = ['01', '02', '03', '04', '05'].includes(L.tag);
     // Clip 5: a component's label stays hidden until its answer is revealed.
-    const show = st.clip === 5 ? isMain && st.revealed.includes(L.k) : isMain || anyExploded || L.k === mover;
+    // Clip 6: only the component in the current step is labelled (the log carries the rest).
+    const show = st.clip === 5 ? isMain && st.revealed.includes(L.k)
+      : st.clip === 6 ? L.k === st.focus
+      : isMain || anyExploded || L.k === mover;
     place(L.el, p, show);
     L.el.classList.toggle('active', L.k === mover);
-    const focused = Boolean((st.clip === 4 || (st.clip === 5 && st.reveal)) && L.k === st.focus);
+    const focused = Boolean((st.clip === 4 || st.clip === 6 || (st.clip === 5 && st.reveal)) && L.k === st.focus);
     L.el.classList.toggle('focus', focused);
     L.el.style.setProperty('--c', L.color);
   }
@@ -222,6 +255,7 @@ function applyState(st, doRender = true) {
     qm.style.opacity = st.focusAmount;
   } else qm.style.display = 'none';
   const sum = document.getElementById('summary');
+  sum.classList.remove('wide');
   sum.style.display = (st.clip === 4 || st.clip === 5) && st.summary > 0 ? 'block' : 'none';
   sum.style.opacity = st.summary;
   sum.innerHTML = st.clip === 5
@@ -232,7 +266,63 @@ function applyState(st, doRender = true) {
   place(notes.guard, project(groups.guard.children.find((c) => c.name === 'CouplingGuard_Top'), -1.6, -2.15, 1.6), st.clip === 3 && st.guardOverlay > 0.5);
   place(notes.gauge, project(groups.gauge.children.find((c) => c.userData.isAnchor), -3.3, -0.2, 0), st.clip === 3);
 
-  if (doRender) renderer.render(scene, camera);
+  renderLog(st);
+
+  if (doRender) {
+    renderer.setScissorTest(false);
+    renderer.setViewport(0, 0, W, H);
+    renderer.render(scene, camera);
+    if (st.clip === 6 && st.inset > 0) {
+      const dial = groups.gauge.getObjectByName('PressureIndicator_Dial').getWorldPosition(new THREE.Vector3());
+      insetCam.position.set(dial.x, dial.y, dial.z + 1.55); // square to the dial: no parallax
+      insetCam.lookAt(dial);
+      const vy = H - INSET.y - INSET.h;
+      renderer.setScissorTest(true);
+      renderer.setViewport(INSET.x, vy, INSET.w, INSET.h);
+      renderer.setScissor(INSET.x, vy, INSET.w, INSET.h);
+      renderer.render(scene, insetCam);
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, W, H);
+    }
+  }
+}
+
+// ------------------------------------------------------------- Clip 6 log sheet
+const logEl = document.getElementById('log');
+const insetEl = document.getElementById('inset');
+function renderLog(st) {
+  const show = st.clip === 6;
+  logEl.style.display = show ? 'block' : 'none';
+  insetEl.style.display = show && st.inset > 0 ? 'block' : 'none';
+  insetEl.style.opacity = st.inset || 0;
+  if (!show) return;
+  let html = `<div class="log-h">Inspection record <span>Pump skid · learning model</span></div>
+    <div class="log-row meta"><div>Date / time</div><div>dd/mm/yyyy · hh:mm</div></div>
+    <div class="log-row meta"><div>Observer</div><div>student name / ID</div></div>`;
+  RECORD_STEPS.forEach((S, i) => {
+    const state = i < st.recDone ? 'done' : i === st.recStep ? 'now' : 'todo';
+    html += `<div class="log-sec ${state}" style="--c:${S.color}"><span class="tag" style="background:${S.color}">${S.tag}</span>${S.title}${state === 'done' ? '<span class="tick">✓</span>' : ''}</div>`;
+    S.fields.forEach(([k, v], j) => {
+      const p = state === 'done' ? 1 : state === 'now' ? st.fieldProgress[j] : 0;
+      const txt = v.slice(0, Math.round(v.length * p));
+      const cursor = state === 'now' && p > 0 && p < 1 ? '<span class="cur">|</span>' : '';
+      html += `<div class="log-row ${state === 'now' && p > 0 && p < 1 ? 'writing' : ''}"><div>${k}</div><div class="hand">${txt}${cursor}</div></div>`;
+    });
+  });
+  logEl.innerHTML = html;
+  const step = st.recStep >= 0 ? RECORD_STEPS[st.recStep] : null;
+  const act = document.getElementById('action');
+  act.style.display = step ? 'block' : 'none';
+  if (step) {
+    act.style.opacity = st.focusAmount;
+    act.style.setProperty('--c', step.color);
+    act.innerHTML = `<b>Step ${st.recStep + 1} of ${RECORD_STEPS.length}</b> ${step.action}`;
+  }
+  const sum = document.getElementById('summary');
+  sum.style.display = st.summary > 0 ? 'block' : 'none';
+  sum.style.opacity = st.summary;
+  sum.classList.add('wide');
+  sum.innerHTML = `<b>Latest data recorded and handed over</b>This entry is now the latest record. Compare it with earlier entries only against approved limits, and none are supplied with this model.`;
 }
 
 window.renderAt = (clip, t) => applyState(stateAt(clip, t));
@@ -334,7 +424,8 @@ window.verify = () => {
   const frames5 = Math.round(durationOf(5) * FPS);
   const frames34 = [...Array(frames3 + 1).keys()].map((f) => [3, f])
     .concat([...Array(frames4 + 1).keys()].map((f) => [4, f]))
-    .concat([...Array(frames5 + 1).keys()].map((f) => [5, f]));
+    .concat([...Array(frames5 + 1).keys()].map((f) => [5, f]))
+    .concat([...Array(Math.round(durationOf(6) * FPS) + 1).keys()].map((f) => [6, f]));
   for (const [c, f] of frames34) {
     applyState(stateAt(c, f / FPS), false);
     for (const r of rotating) if (r.rotation.x) moved++;
@@ -370,6 +461,21 @@ window.verify = () => {
   if (leaks) fail('Clip 5 shows an answer before its reveal');
   if (flow5) fail('Flow shown in Clip 5');
   ok('Clip 5 asks each component once, in a different order from Clip 4; no answer shown before reveal', { asked, leaks, flow5 });
+
+  // 7d. Clip 6: steps in order, no flow, and NO numeric values anywhere in the log entries.
+  const frames6 = Math.round(durationOf(6) * FPS);
+  const seq6 = [];
+  let flow6 = 0;
+  for (let f = 0; f <= frames6; f++) {
+    const st = stateAt(6, f / FPS);
+    if (st.focus && seq6[seq6.length - 1] !== st.focus) seq6.push(st.focus);
+    if (st.flowOpacity > 0 || st.flowRunning) flow6++;
+  }
+  const digits = RECORD_STEPS.flatMap((S) => S.fields.map((x) => x[1])).filter((v) => /\d/.test(v));
+  if (JSON.stringify(seq6) !== JSON.stringify(RECORD_STEPS.map((S) => S.k))) fail('Clip 6 step order incorrect');
+  if (flow6) fail('Flow shown in Clip 6');
+  if (digits.length) fail('Clip 6 log contains numeric values: ' + digits.join(' | '));
+  ok('Clip 6 recording round in order; no flow; no invented numeric values in the log', { seq6, flow6, numericEntries: digits.length });
 
   // 8. Flow particles: inside pipe bore, monotonic direction, matching reference arrows.
   let outside = 0, reversed = 0;
