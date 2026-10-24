@@ -1,0 +1,560 @@
+<title>MV Arvin Hull Failure</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one cinematic 16:9 viewport, a transport bar styled like a bridge console, then a slim engineering readout. Single dark look by design. */
+:root{
+  --bg:#0d1215; --panel:#151c20; --line:#26323a; --fg:#d9e1e4; --muted:#8a9aa2;
+  --signal:#e8a33d; --hog:#d9614c; --sag:#4f9fd1;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4vw,38px);letter-spacing:.02em;margin:0;text-transform:uppercase;text-wrap:balance}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:#1b2226;overflow:hidden;border:1px solid var(--line)}
+.stage canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(8px,2vw,18px)}
+.hud-top{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:clamp(9px,1.2vw,12px);color:rgba(230,236,238,.85);letter-spacing:.08em;text-shadow:0 1px 2px #000}
+.rec{color:var(--signal)}
+.caption{align-self:flex-start;max-width:62ch;background:rgba(8,12,14,.55);backdrop-filter:blur(3px);padding:6px 10px;border-left:2px solid var(--signal)}
+.caption b{display:block;font-family:var(--display);font-size:clamp(13px,1.8vw,19px);letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+.caption span{font-size:clamp(10px,1.3vw,13px);color:#c3ced3}
+.letterbox .stage::before,.letterbox .stage::after{content:"";position:absolute;left:0;right:0;height:5%;background:#000;z-index:2}
+.stage::before{top:0}.stage::after{bottom:0}
+.console{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:10px 12px}
+button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:#1f2a30;color:var(--fg);border:1px solid #33424b;padding:7px 12px;cursor:pointer;min-width:84px}
+button:hover{border-color:var(--signal)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.track{position:relative;min-width:0}
+.marks{display:grid;grid-template-columns:8fr 7fr 8fr 7fr;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;margin-bottom:4px}
+.marks div{border-left:1px solid #3a4850;padding-left:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.marks div.on{color:var(--signal);border-color:var(--signal)}
+input[type=range]{width:100%;accent-color:var(--signal);margin:0}
+.tc{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums;color:var(--signal);min-width:7ch;text-align:right}
+.readout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);padding:12px 14px;min-width:0}
+.card h2{font-family:var(--display);font-size:16px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px;font-weight:700;color:var(--muted)}
+#profile{width:100%;height:120px;display:block}
+.state{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;margin-top:6px;flex-wrap:wrap}
+.pill{padding:2px 8px;border:1px solid currentColor;letter-spacing:.08em}
+.note p{margin:0 0 8px;font-size:13px;color:#c3ced3;max-width:65ch}
+.note p:last-child{margin:0}
+@media (max-width:720px){.readout{grid-template-columns:1fr}.marks{font-size:8px}.console{grid-template-columns:auto 1fr;}.tc{grid-column:2;text-align:left}}
+@media (prefers-reduced-motion:reduce){.caption{backdrop-filter:none}}
+</style>
+
+<div class="wrap letterbox">
+  <header>
+    <h1>MV Arvin · Hull Girder Failure</h1>
+    <div class="meta">BLACK SEA · 17 JAN 2021 · CINEMATIC RECONSTRUCTION · 30 s</div>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="hud">
+      <div class="hud-top"><span><span class="rec">●</span> CAM A · 24 fps</span><span id="hudtc">00:00:00</span></div>
+      <div class="caption" id="caption"><b>Shot 1 · Wide tracking</b><span>Anchored in a 6 m swell. The long, shallow hull flexes as each crest passes.</span></div>
+    </div>
+  </div>
+
+  <div class="console">
+    <button id="play" type="button">Pause</button>
+    <div class="track">
+      <div class="marks" id="marks">
+        <div class="on">0–8 s ANCHORED</div><div>8–15 s HOGGING</div><div>15–23 s FRACTURE</div><div>23–30 s FOUNDERING</div>
+      </div>
+      <input id="scrub" type="range" min="0" max="30" step="0.01" value="0" aria-label="Timeline">
+    </div>
+    <div class="tc" id="tc">00.00 s</div>
+  </div>
+
+  <div class="readout">
+    <div class="card">
+      <h2>Hull deflection vs wave profile (exaggerated ×4)</h2>
+      <canvas id="profile" width="700" height="120"></canvas>
+      <div class="state"><span>Midship condition</span><span class="pill" id="cond">—</span><span id="defl" style="color:var(--muted)"></span></div>
+    </div>
+    <div class="card note">
+      <h2>Teaching note</h2>
+      <p>When a crest sits amidships and the ends hang over troughs, the hull <b>hogs</b>: the deck goes into tension and the bottom shell into compression. Real hogging collapse usually starts as bottom-plate buckling, followed by tensile tearing of the deck.</p>
+      <p>The crumpled deck in Shot 2 follows the brief as a visual effect. Use it in class to ask students where the buckling should really start.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const DUR=30, L=86, B=12.6, D=5.6, DRAFT=3.4;
+const stage=document.getElementById('stage');
+const CAPTURE=/capture/.test(location.search);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:CAPTURE});
+renderer.setPixelRatio(CAPTURE?1:Math.min(devicePixelRatio,1.75));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+const FOG=new THREE.Color(0x56616a);
+scene.fog=new THREE.FogExp2(FOG,0.0062);
+scene.background=FOG.clone();
+const camera=new THREE.PerspectiveCamera(42,16/9,0.3,1500);
+
+// ---------- deterministic noise ----------
+let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};
+const ss=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+// ---------- sky ----------
+const skyMat=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
+  uniforms:{flash:{value:0},time:{value:0}},
+  vertexShader:`varying vec3 vP;void main(){vP=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vP;uniform float flash;uniform float time;
+  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  void main(){float y=max(vP.y,0.);vec2 uv=vP.xz/(y+.25)*2.5+vec2(time*.04,0.);
+  float c=n(uv)*.5+n(uv*2.3)*.3+n(uv*5.1)*.2;
+  vec3 hor=vec3(.337,.38,.416),top=vec3(.13,.15,.17);
+  vec3 col=mix(hor,top,pow(y,.55));col*=.78+.4*c;col+=flash*vec3(.55,.6,.7)*(.4+c);
+  gl_FragColor=vec4(col,1.);}`});
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(1200,32,16),skyMat));
+
+// ---------- lights ----------
+const hemi=new THREE.HemisphereLight(0x9aa8b2,0x1a2228,0.85); scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xc9d3da,0.75); sun.position.set(-60,90,40); scene.add(sun);
+const flashLight=new THREE.DirectionalLight(0xdfe8ff,0); flashLight.position.set(80,120,-60); scene.add(flashLight);
+const ambient=new THREE.AmbientLight(0x2a3238,0.4); scene.add(ambient);
+
+// ---------- wave field ----------
+// waves arrive from ahead (+x); primary swell wavelength ~ ship length so it can hog/sag the hull
+const k1=2*Math.PI/L, w1=Math.sqrt(9.81*k1);
+const comps=[ // [amp, wavelength, dirAngle, phase]
+ [0.0,L,0,0],
+ [0.55,37,0.5,1.3],[0.4,23,-0.7,4.1],[0.28,14,1.1,2.2],[0.18,9,-1.3,0.7],[0.12,6.3,0.3,5.0]
+].map(c=>{const k=2*Math.PI/c[1];return {a:c[0],k,w:Math.sqrt(9.81*k),dx:-Math.cos(c[2]),dz:Math.sin(c[2]),p:c[3]};});
+// warped wave clock: slow motion around the failure
+function tau(t){ // integral of speed s(t): 1 -> 0.45 between 10..22
+  const sp=t=>1-0.55*ss(9.5,12,t)*(1-ss(21,24,t));
+  let acc=0,steps=60,dt=t/steps; for(let i=0;i<steps;i++)acc+=sp((i+.5)*dt)*dt; return acc;
+}
+let T=0, A1=3, PH1=0, chop=1;
+function swellPhase(t){ // choose phase so a crest is amidships at t=11.6 (wave time)
+  return k1*0 + w1*(T-tau(11.6));
+}
+function waveH(x,z){
+  let h=A1*Math.cos(k1*x+w1*T-w1*tau(11.6)*0+PH1);
+  for(let i=1;i<comps.length;i++){const c=comps[i];h+=chop*c.a*Math.cos(c.k*(c.dx*x+c.dz*z)+c.w*T+c.p);}
+  return h;
+}
+function waveSlope(x){ return -A1*k1*Math.sin(k1*x+w1*T+PH1); }
+
+const WS=760, WN=200;
+const waterGeo=new THREE.PlaneGeometry(WS,WS,WN,WN); waterGeo.rotateX(-Math.PI/2);
+const wBase=waterGeo.attributes.position.array.slice();
+const wCol=new Float32Array(wBase.length); waterGeo.setAttribute('color',new THREE.BufferAttribute(wCol,3));
+const waterMat=new THREE.MeshPhongMaterial({color:0xffffff,vertexColors:true,shininess:60,specular:0x3c474d,emissive:0x030607});
+const water=new THREE.Mesh(waterGeo,waterMat); scene.add(water);
+
+let foamCenter=new THREE.Vector2(0,0), foamAmt=0;
+function updateWater(cx,cz){
+  const p=waterGeo.attributes.position.array;
+  const sx=Math.round(cx/ (WS/WN))*(WS/WN), sz=Math.round(cz/(WS/WN))*(WS/WN);
+  const deep=new THREE.Color(0x172529).convertSRGBToLinear(), mid=new THREE.Color(0x30444b).convertSRGBToLinear(), foam=new THREE.Color(0xb7c1c3).convertSRGBToLinear();
+  for(let i=0;i<p.length;i+=3){
+    const x=wBase[i]+sx, z=wBase[i+2]+sz;
+    const h=waveH(x,z); p[i]=x; p[i+1]=h; p[i+2]=z;
+    let f=ss(3.6,5.6,h)*0.55;
+    // streaky foam
+    f+=0.18*ss(0.62,0.9,Math.sin(x*0.13+z*0.05+T*0.3)*Math.sin(z*0.21-x*0.04)*0.5+0.5);
+    if(foamAmt>0){const dx=x-foamCenter.x,dz=z-foamCenter.y,r=Math.sqrt(dx*dx+dz*dz);
+      const ang=Math.atan2(dz,dx);
+      f+=foamAmt*Math.exp(-r*r/900)*(0.55+0.45*Math.sin(ang*5+r*0.35-T*2.2));}
+    f=Math.min(1,f);
+    const c=mid.clone().lerp(deep,ss(-3,1,-h)*0.6).lerp(foam,f);
+    wCol[i]=c.r;wCol[i+1]=c.g;wCol[i+2]=c.b;
+  }
+  waterGeo.attributes.position.needsUpdate=true; waterGeo.attributes.color.needsUpdate=true;
+  waterGeo.computeVertexNormals();
+}
+
+// ---------- textures ----------
+function canvasTex(w,h,draw,rep){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);
+  const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;if(rep){t.wrapS=t.wrapT=THREE.RepeatWrapping;}return t;}
+const hullTex=canvasTex(2048,256,(g,w,h)=>{
+  g.fillStyle='#2c5778';g.fillRect(0,0,w,h);
+  for(let i=0;i<2600;i++){g.fillStyle=`rgba(${20+rnd()*30},${60+rnd()*40},${90+rnd()*40},${rnd()*0.25})`;g.fillRect(rnd()*w,rnd()*h,2+rnd()*30,1+rnd()*6);}
+  // plate seams
+  g.strokeStyle='rgba(10,25,35,.45)';g.lineWidth=1;
+  for(let x=0;x<w;x+=48){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}
+  for(const y of [h*0.3,h*0.62]){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}
+  // boot topping (antifouling red) below waterline
+  const wl=h*(1-DRAFT/D);
+  g.fillStyle='#6b2a22';g.fillRect(0,wl,w,h-wl);
+  for(let i=0;i<500;i++){g.fillStyle=`rgba(40,15,10,${rnd()*0.35})`;g.fillRect(rnd()*w,wl+rnd()*(h-wl),3+rnd()*30,2+rnd()*5);}
+  // rust streaks from deck edge, scuppers and seams
+  for(let i=0;i<520;i++){const x=rnd()*w,y0=rnd()<0.6?rnd()*6:rnd()*h*0.6,len=10+rnd()*rnd()*190;
+    const gr=g.createLinearGradient(0,y0,0,y0+len);const a=0.25+rnd()*0.55;
+    gr.addColorStop(0,`rgba(${120+rnd()*50},${55+rnd()*25},${25},${a})`);gr.addColorStop(1,'rgba(110,50,20,0)');
+    g.fillStyle=gr;g.fillRect(x,y0,1+rnd()*3.5,len);}
+  for(let i=0;i<160;i++){g.fillStyle=`rgba(${110+rnd()*40},${50+rnd()*20},20,${0.3+rnd()*0.4})`;g.beginPath();g.ellipse(rnd()*w,rnd()*h*0.75,2+rnd()*9,1+rnd()*5,0,0,7);g.fill();}
+  // sheer strake rust band
+  g.fillStyle='rgba(120,60,25,.35)';g.fillRect(0,0,w,5);
+  // draft marks near bow & stern
+  g.fillStyle='rgba(230,230,225,.8)';g.font='bold 13px monospace';
+  for(const u of [0.03,0.97]) for(let m=1;m<=5;m++) g.fillText(m+'M',u*w-8,h-m*h/D*0.95);
+});
+const deckTex=canvasTex(1024,256,(g,w,h)=>{
+  g.fillStyle='#4a4743';g.fillRect(0,0,w,h);
+  for(let i=0;i<5000;i++){const r=rnd();g.fillStyle=r<0.5?`rgba(${100+rnd()*60},${45+rnd()*25},18,${rnd()*0.4})`:`rgba(30,30,30,${rnd()*0.3})`;g.fillRect(rnd()*w,rnd()*h,2+rnd()*22,2+rnd()*10);}
+  g.strokeStyle='rgba(20,20,20,.5)';
+  for(let x=0;x<w;x+=20){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}
+},false);
+const hatchTex=canvasTex(512,128,(g,w,h)=>{
+  g.fillStyle='#3e5b6c';g.fillRect(0,0,w,h);
+  for(let i=0;i<1600;i++){g.fillStyle=`rgba(${110+rnd()*50},${50+rnd()*20},20,${rnd()*0.45})`;g.fillRect(rnd()*w,rnd()*h,2+rnd()*16,1+rnd()*6);}
+  g.strokeStyle='rgba(15,20,25,.7)';g.lineWidth=2;
+  for(let x=0;x<w;x+=w/8){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}
+},true);
+const whiteTex=canvasTex(512,256,(g,w,h)=>{
+  g.fillStyle='#d9dad6';g.fillRect(0,0,w,h);
+  for(let i=0;i<900;i++){g.fillStyle=`rgba(${120+rnd()*40},${70+rnd()*20},40,${rnd()*0.25})`;g.fillRect(rnd()*w,rnd()*h,1+rnd()*2,4+rnd()*40);}
+  g.fillStyle='rgba(120,120,115,.3)';for(let y=0;y<h;y+=64)g.fillRect(0,y,w,2);
+},true);
+
+// ---------- hull geometry ----------
+// stations along x, cross-section points; each half gets its own mesh so it can separate
+const BREAK=1.5; // fracture station, just aft of midship
+function halfBeam(x){ // fine bow, near-box stern
+  const xb=x-L/2; let f=1;
+  if(x>L/2-14) f=Math.sqrt(Math.max(0,1-Math.pow((x-(L/2-14))/14,1.6)));
+  if(x<-L/2+5) f=0.86+0.14*Math.sqrt(Math.max(0,(x+L/2)/5));
+  return Math.max(0.15,(B/2)*f);
+}
+function keelY(x){ return x>L/2-10? Math.pow((x-(L/2-10))/10,2)*2.2 : (x<-L/2+7? Math.pow((-L/2+7-x)/7,2)*1.6:0); }
+function sheerY(x){ return D + (x>L/2-12? Math.pow((x-(L/2-12))/12,2)*1.6:0) + (x<-L/2+8?0.3:0); }
+const SEC=[[-1,1],[-1,.62],[-1,.32],[-1,.12],[-.94,.02],[-.8,0],[-.4,0],[0,0],[.4,0],[.8,0],[.94,.02],[1,.12],[1,.32],[1,.62],[1,1]];
+function buildHull(x0,x1,jagged){
+  const nx=Math.max(4,Math.round((x1-x0)/0.9));
+  const pos=[],uv=[],idx=[],base=[];
+  for(let i=0;i<=nx;i++){
+    let x=x0+(x1-x0)*i/nx;
+    const hb=halfBeam(x),ky=keelY(x),sy=sheerY(x);
+    for(let j=0;j<SEC.length;j++){
+      let xx=x;
+      if(jagged&&(i===0||i===nx)&&((jagged>0&&i===0)||(jagged<0&&i===nx))){xx+= (Math.sin(j*2.7)*0.9+Math.sin(j*5.3)*0.5);}
+      const s=SEC[j], y=ky+(sy-ky)*s[1], z=s[0]*hb*(s[1]<0.12?1-(0.12-s[1])*0.4:1);
+      pos.push(xx,y,z); base.push(xx,y,z);
+      uv.push((x+L/2)/L, y/D);
+    }
+  }
+  const m=SEC.length;
+  for(let i=0;i<nx;i++)for(let j=0;j<m-1;j++){const a=i*m+j,b=a+1,c=a+m,d=c+1;idx.push(a,c,b,b,c,d);}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx); g.computeVertexNormals(); g.userData.base=new Float32Array(base);
+  return g;
+}
+function deckH(x,z){ // raised hatch covers on three holds
+  const holds=[[-26,-6.5],[-5,14],[15.5,30]]; let h=0;
+  for(const [a,b] of holds){ h=Math.max(h, ss(a-0.3,a+0.3,x)*(1-ss(b-0.3,b+0.3,x))*(1-ss(B/2-2.2,B/2-1.6,Math.abs(z)))*1.5); }
+  return h;
+}
+function buildDeck(x0,x1){
+  const nx=Math.round((x1-x0)/0.45), nz=28, pos=[],uv=[],idx=[],base=[];
+  for(let i=0;i<=nx;i++){const x=x0+(x1-x0)*i/nx,hb=halfBeam(x)*0.995;
+    for(let j=0;j<=nz;j++){const z=-hb+2*hb*j/nz,y=sheerY(x)+deckH(x,z);pos.push(x,y,z);base.push(x,y,z);uv.push((x+L/2)/L*8,j/nz);}}
+  const m=nz+1;
+  for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){const a=i*m+j,b=a+1,c=a+m,d=c+1;idx.push(a,b,c,b,d,c);}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx);g.computeVertexNormals();g.userData.base=new Float32Array(base);return g;
+}
+const hullMat=new THREE.MeshStandardMaterial({map:hullTex,roughness:0.72,metalness:0.35,side:THREE.DoubleSide});
+const deckMat=new THREE.MeshStandardMaterial({map:hatchTex,roughness:0.8,metalness:0.3,side:THREE.DoubleSide});
+const whiteMat=new THREE.MeshStandardMaterial({map:whiteTex,roughness:0.6,metalness:0.1});
+const darkMat=new THREE.MeshStandardMaterial({color:0x14181b,roughness:0.4,metalness:0.6});
+const glassMat=new THREE.MeshStandardMaterial({color:0x0b1318,roughness:0.1,metalness:0.9,emissive:0x2a2410,emissiveIntensity:0.6});
+const rustMat=new THREE.MeshStandardMaterial({color:0x5a3624,roughness:0.9,metalness:0.2,side:THREE.DoubleSide});
+const holdMat=new THREE.MeshStandardMaterial({color:0x2b2621,roughness:0.95,metalness:0.1,side:THREE.DoubleSide});
+
+const halves=[];
+function makeHalf(x0,x1,dir){
+  const grp=new THREE.Group(), inner=new THREE.Group(); grp.add(inner);
+  const hull=new THREE.Mesh(buildHull(x0,x1,dir),hullMat);
+  const deck=new THREE.Mesh(buildDeck(x0,x1),deckMat);
+  inner.add(hull,deck);
+  // exposed hold interior (only visible once separated): dark bulkhead-free box
+  const xe=dir>0?x0:x1;
+  const holdBox=new THREE.Mesh(new THREE.BoxGeometry(0.2,D*0.9,B*0.92),holdMat);
+  holdBox.position.set(xe+dir*7,D*0.48,0); inner.add(holdBox);
+  // torn plate flaps at the fracture edge
+  const flaps=[];
+  for(let i=0;i<9;i++){const f=new THREE.Mesh(new THREE.PlaneGeometry(1.4+rnd()*1.5,1+rnd()*1.6),rustMat);
+    const side=i<4?1:(i<8?-1:0);
+    f.position.set(xe,side===0?D:0.6+rnd()*(D-1.4),side===0?(rnd()-.5)*8:side*B/2);
+    if(side===0)f.rotation.x=-Math.PI/2; else f.rotation.y=Math.PI/2;
+    f.userData={rx:(rnd()-.5)*1.2,ry:(rnd()-.5)*1.4,rz:(rnd()-.5)*1.0};f.visible=false;inner.add(f);flaps.push(f);}
+  scene.add(grp);
+  return {grp,inner,hull,deck,dir,x0,x1,xe,flaps};
+}
+const stern=makeHalf(-L/2,BREAK,-1), bow=makeHalf(BREAK,L/2,1);
+halves.push(stern,bow);
+
+// superstructure (stern)
+function box(w,h,d,mat,x,y,z,parent){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);(parent||stern.inner).add(m);return m;}
+const sx0=-L/2+6.5;
+box(9,2.6,B*0.86,whiteMat,sx0,D+1.3,0);
+box(7.5,2.6,B*0.74,whiteMat,sx0-0.3,D+3.9,0);
+box(6,2.4,B*1.02,whiteMat,sx0,D+6.4,0); // wheelhouse with wings
+box(6.05,0.75,B*1.0,glassMat,sx0+0.1,D+6.8,0);
+box(0.1,0.8,B*0.7,glassMat,sx0+3.78,D+4.1,0);
+box(0.1,0.8,B*0.8,glassMat,sx0+4.53,D+1.5,0);
+box(6.4,0.25,B*1.06,darkMat,sx0,D+7.7,0);
+const funnel=box(2.4,4.2,2.0,new THREE.MeshStandardMaterial({color:0x22313b,roughness:.6}),sx0-5,D+4.4,0);
+box(2.5,0.9,2.1,darkMat,sx0-5,D+6.8,0);
+const mastMat=new THREE.MeshStandardMaterial({color:0xcfcfca,roughness:.5});
+box(0.25,4,0.25,mastMat,sx0+0.5,D+9.8,0);
+box(0.2,0.2,3.2,mastMat,sx0+0.5,D+10.8,0);
+box(0.2,1.2,B,whiteMat,-L/2+0.6,D+0.6,0); // stern bulwark
+// forecastle & foremast (bow)
+const fc=new THREE.Mesh(new THREE.BoxGeometry(9,1.8,B*0.7),new THREE.MeshStandardMaterial({map:hullTex,roughness:.7,metalness:.3}));
+fc.position.set(L/2-10,sheerY(L/2-10)+0.6,0); bow.inner.add(fc);
+box(0.3,7,0.3,mastMat,L/2-12,D+3.8,0,bow.inner);
+box(0.25,4.5,0.25,mastMat,-3,D+2.4,B/2-1,stern.inner); // deck crane posts
+box(0.25,4.5,0.25,mastMat,22,D+2.4,-B/2+1,bow.inner);
+// anchor lights + chain
+const lampMat=new THREE.MeshBasicMaterial({color:0xfff4d6,fog:false});
+const lamp1=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),lampMat);lamp1.position.set(L/2-12,D+7.4,0);bow.inner.add(lamp1);
+const lamp2=new THREE.Mesh(new THREE.SphereGeometry(0.22,8,6),lampMat);lamp2.position.set(sx0+0.5,D+11.9,0);stern.inner.add(lamp2);
+const glowTex=canvasTex(64,64,(g,w,h)=>{const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,240,200,1)');r.addColorStop(.25,'rgba(255,220,160,.5)');r.addColorStop(1,'rgba(255,200,120,0)');g.fillStyle=r;g.fillRect(0,0,64,64);});
+for(const lp of [lamp1,lamp2]){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));s.scale.set(4,4,1);lp.add(s);}
+const chainGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);
+const chain=new THREE.Line(chainGeo,new THREE.LineBasicMaterial({color:0x2a1d14}));scene.add(chain);
+
+// ---------- particles ----------
+const dotTex=canvasTex(64,64,(g)=>{const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.4,'rgba(255,255,255,.55)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64);});
+dotTex.encoding=THREE.LinearEncoding;
+// rain
+const RN=7000, rainPos=new Float32Array(RN*6), rainSeed=new Float32Array(RN*3);
+for(let i=0;i<RN;i++){rainSeed[i*3]=rnd();rainSeed[i*3+1]=rnd();rainSeed[i*3+2]=rnd();}
+const rainGeo=new THREE.BufferGeometry();rainGeo.setAttribute('position',new THREE.BufferAttribute(rainPos,3));
+const rain=new THREE.LineSegments(rainGeo,new THREE.LineBasicMaterial({color:0xaab6bd,transparent:true,opacity:0.42}));
+rain.frustumCulled=false;scene.add(rain);
+function updateRain(t){const c=camera.position;const S=70,H=50;
+  for(let i=0;i<RN;i++){const a=rainSeed[i*3],b=rainSeed[i*3+1],e=rainSeed[i*3+2];
+    const fall=((e*H - t*(26+b*8))%H+H)%H;
+    const x=c.x+(a-.5)*S - fall*0.28, z=c.z+(b-.5)*S, y=c.y-H*0.45+fall;
+    rainPos.set([x,y,z,x+0.42,y+1.5,z],i*6);}
+  rainGeo.attributes.position.needsUpdate=true;}
+// spray & debris (pre-allocated, deterministic from birth time)
+const SN=2600, sprayPos=new Float32Array(SN*3), sprayInfo=[];
+for(let i=0;i<SN;i++){const burst=i<1500;sprayInfo.push({t0:burst?15.25+rnd()*1.4:15+rnd()*12,
+  vx:(rnd()-.5)*(burst?18:6),vy:(burst?6:2)+rnd()*(burst?16:6),vz:(rnd()-.5)*(burst?22:8),life:1.4+rnd()*2.2,burst});}
+const sprayGeo=new THREE.BufferGeometry();sprayGeo.setAttribute('position',new THREE.BufferAttribute(sprayPos,3));
+const spray=new THREE.Points(sprayGeo,new THREE.PointsMaterial({map:dotTex,size:0.42,transparent:true,opacity:0.7,depthWrite:false,color:0xdfe6e8}));
+spray.frustumCulled=false;scene.add(spray);
+// bow-wave spray that runs the whole clip
+const BN=900,bowPos=new Float32Array(BN*3),bowInfo=[];
+for(let i=0;i<BN;i++)bowInfo.push({ph:rnd()*3,vx:-2-rnd()*5,vy:4+rnd()*7,vz:(rnd()-.5)*10,life:1+rnd()*1.2});
+const bowGeo=new THREE.BufferGeometry();bowGeo.setAttribute('position',new THREE.BufferAttribute(bowPos,3));
+const bowSpray=new THREE.Points(bowGeo,new THREE.PointsMaterial({map:dotTex,size:0.6,transparent:true,opacity:0.55,depthWrite:false,color:0xdfe6e8}));
+bowSpray.frustumCulled=false;scene.add(bowSpray);
+const debris=[];
+const debrisGeo=new THREE.BoxGeometry(1,0.06,0.7);
+for(let i=0;i<70;i++){const m=new THREE.Mesh(debrisGeo,i%3?rustMat:hullMat);const s=0.3+rnd()*1.3;m.scale.set(s,1,s*(0.5+rnd()));
+  m.userData={t0:15.3+rnd()*0.9,vx:(rnd()-.5)*14,vy:5+rnd()*13,vz:(rnd()-.5)*18,ax:rnd()*8,az:rnd()*8};m.visible=false;scene.add(m);debris.push(m);}
+// churning foam vortex points
+const FN=1500,foamPos=new Float32Array(FN*3),foamInfo=[];
+for(let i=0;i<FN;i++)foamInfo.push({r:3+Math.pow(rnd(),0.7)*34,a:rnd()*Math.PI*2,s:0.2+rnd()*0.6,t0:16.5+rnd()*7});
+const foamGeo=new THREE.BufferGeometry();foamGeo.setAttribute('position',new THREE.BufferAttribute(foamPos,3));
+const foamPts=new THREE.Points(foamGeo,new THREE.PointsMaterial({map:dotTex,size:0.8,transparent:true,opacity:0.45,depthWrite:false,color:0xe8eeef}));
+foamPts.frustumCulled=false;scene.add(foamPts);
+
+// ---------- ship dynamics ----------
+const NS=44; const stX=[...Array(NS+1)].map((_,i)=>-L/2+L*i/NS);
+let defl=new Float32Array(NS+1), lastCond=0, lastDeflMid=0;
+function sampleDefl(x){const f=(x+L/2)/L*NS;const i=Math.max(0,Math.min(NS-1,Math.floor(f)));const u=Math.min(1,Math.max(0,f-i));return defl[i]*(1-u)+defl[i+1]*u;}
+function buckle(x,z,b){ if(b<=0)return 0; const dx=x-BREAK;
+  const env=Math.exp(-dx*dx/30);
+  return b*env*(1.6*(1-Math.abs(z)/(B/2))*0.7+0.5 + 0.45*Math.sin(x*1.7+z*0.6)*Math.cos(z*1.1-x*0.5) + 0.18*Math.sin(x*3.1-z*2.3));}
+function deformMesh(mesh,b,isDeck){
+  const g=mesh.geometry,p=g.attributes.position.array,base=g.userData.base;
+  for(let i=0;i<p.length;i+=3){const x=base[i],y=base[i+1],z=base[i+2];
+    let dy=sampleDefl(x), dz=0;
+    if(isDeck) dy+=buckle(x,z,b);
+    else if(b>0){const w=ss(1.5,D,y); const e=Math.exp(-(x-BREAK)*(x-BREAK)/26);
+      dy+=w*buckle(x,z*0.7,b)*0.85; dz=b*e*w*0.55*Math.sin(x*1.9+y*1.3)*Math.sign(z);}
+    p[i]=x;p[i+1]=y+dy;p[i+2]=z+dz;}
+  g.attributes.position.needsUpdate=true; g.computeVertexNormals();
+}
+
+// camera keyframes: [time, pos, target, fov]
+const KEYS=[
+ [0,  [-62,17,92],[ -4,3,0],40],
+ [8,  [ 40,13,82],[  2,3,0],40],
+ [10.5,[16,4.5,40],[ 0,3,0],38],
+ [12.2,[7.5,3.4,27],[ 1,3.6,0],44],
+ [15, [6.5,3.6,25],[ 1.5,4,0],46],
+ [17, [9,3.2,27],[ 1,3,0],46],
+ [23, [-5,6.5,34],[ 0,1.5,0],44],
+ [26.5,[4,34,64],[ 0,-1,0],44],
+ [30, [18,78,88],[ 0,-3,0],42]];
+function camAt(t){let i=0;while(i<KEYS.length-2&&t>KEYS[i+1][0])i++;
+  const a=KEYS[i],b=KEYS[i+1],u=ss(a[0],b[0],t),uu=u;
+  const P=a[1].map((v,j)=>lerp(v,b[1][j],uu)),Tg=a[2].map((v,j)=>lerp(v,b[2][j],uu));
+  return {P,Tg,fov:lerp(a[3],b[3],uu)};}
+
+// ---------- profile readout ----------
+const prof=document.getElementById('profile'),pg=prof.getContext('2d');
+const condEl=document.getElementById('cond'),deflEl=document.getElementById('defl');
+function drawProfile(rigidY,rigidP,broken){
+  const W=prof.width,H=prof.height,mx=W*0.06,sc=(W-2*mx)/L,ys=H/2+10;
+  pg.clearRect(0,0,W,H);
+  pg.strokeStyle='rgba(138,154,162,.25)';pg.lineWidth=1;pg.beginPath();pg.moveTo(0,ys);pg.lineTo(W,ys);pg.stroke();
+  // wave along hull centreline
+  pg.strokeStyle='#4f9fd1';pg.lineWidth=2;pg.beginPath();
+  for(let i=0;i<=120;i++){const x=-L/2-8+(L+16)*i/120;const h=waveH(x,0);const X=mx+(x+L/2)*sc,Y=ys-h*6;i?pg.lineTo(X,Y):pg.moveTo(X,Y);}pg.stroke();
+  // hull keel line (deflection ×4)
+  pg.strokeStyle=broken?'#d9614c':'#e8a33d';pg.lineWidth=3;pg.beginPath();
+  for(let i=0;i<=NS;i++){const x=stX[i];if(broken&&i===Math.round((BREAK+L/2)/L*NS)){pg.stroke();pg.beginPath();}
+    const y=(rigidY+rigidP*x-DRAFT+D*0.5)*6 + defl[i]*24; const X=mx+(x+L/2)*sc,Y=ys-y; (i&&!(broken&&i===Math.round((BREAK+L/2)/L*NS)))?pg.lineTo(X,Y):pg.moveTo(X,Y);}
+  pg.stroke();
+  pg.fillStyle='#8a9aa2';pg.font='11px IBM Plex Mono, monospace';pg.fillText('AFT',4,H-6);pg.fillText('FWD',W-30,H-6);
+  pg.fillStyle='#4f9fd1';pg.fillText('wave',W-80,14);pg.fillStyle='#e8a33d';pg.fillText('hull',W-40,14);
+}
+
+// ---------- captions ----------
+const SHOTS=[
+ [0,8,'Shot 1 · Wide tracking','Anchored in a 6 m swell. The long, shallow hull flexes as each crest passes.'],
+ [8,15,'Shot 2 · Push-in, waterline amidships','A crest lifts midship while bow and stern drop into troughs. The deck buckles upward.'],
+ [15,23,'Shot 3 · Fracture','Shell plating tears amidships. The hull parts and icy water floods the open holds.'],
+ [23,30,'Shot 4 · Aerial pull-back','Both halves tilt inward and go down into churning foam.']];
+const capEl=document.getElementById('caption'),marks=[...document.querySelectorAll('#marks div')];
+let lastShot=-1;
+
+// ---------- main render ----------
+function render(t){
+  T=tau(t);
+  // swell grows into the 'massive wave'
+  A1=lerp(2.6,4.4,ss(7.5,11.5,t))*(1-0.25*ss(24,30,t));
+  // phase chosen so the crest is amidships at t=12.4 (wave clock)
+  PH1=-w1*tau(12.4);
+  chop=1+0.3*ss(15,20,t);
+  skyMat.uniforms.time.value=t;
+
+  // --- rigid-body fit + flex
+  const hs=stX.map(x=>waveH(x,0));
+  const mean=hs.reduce((a,b)=>a+b,0)/hs.length;
+  let sxy=0,sxx=0;stX.forEach((x,i)=>{sxy+=x*(hs[i]-mean);sxx+=x*x;});const pitch=sxy/sxx;
+  const breakT=ss(15.2,16.2,t);
+  const flexK=lerp(0.11,0.24,ss(8,12,t));
+  const bk=ss(12.3,14.6,t);
+  for(let i=0;i<=NS;i++){const x=stX[i];const r=hs[i]-(mean+pitch*x);
+    // after fracture each half follows its own wave, so let deflection grow towards the break
+    defl[i]=r*flexK*(1-breakT*0.6) + bk*0.9*Math.exp(-Math.pow((x-BREAK)/14,2));}
+  const midDefl=defl[Math.round(NS/2)]-(defl[0]+defl[NS])/2;
+  deformMesh(stern.hull,bk,false);deformMesh(bow.hull,bk,false);
+  deformMesh(stern.deck,bk,true);deformMesh(bow.deck,bk,true);
+
+  const roll=0.05*Math.sin(T*0.9+0.4)+0.03*Math.sin(T*1.7);
+  // --- separation & foundering
+  const gap=lerp(0,0.6,ss(15.2,17,t))+lerp(0,7,ss(17,23,t))+lerp(0,4,ss(23,30,t));
+  const fold=-0.05*ss(15.2,16.5,t)+0.2*ss(16.5,23,t)+0.55*ss(23,30,t); // + = broken ends go down
+  const sink=lerp(0,3.2,ss(16,23,t))+lerp(0,19,Math.pow(ss(23.5,30.2,t),1.8));
+  const follow=1-ss(18,26,t);
+  const ship0=new THREE.Vector3(0,mean-DRAFT+D*0.0,0);
+  for(const h of halves){
+    const ex=h.xe; // pivot at the fracture
+    const ownH=waveH((h.x0+h.x1)/2,0);
+    const y=lerp(mean,ownH*0.6+mean*0.4,breakT)*follow + (1-follow)*mean*0.3 - DRAFT - 0.5 - sink;
+    const p=lerp(pitch,0,breakT*0.7);
+    h.grp.position.set(ex+h.dir*gap*0.5, y + pitch*ex, 0);
+    h.grp.rotation.set(roll*(1+breakT*h.dir*0.6),0,0);
+    h.grp.rotation.z=Math.atan(p) + h.dir*fold;
+    h.grp.rotation.y=h.dir*0.06*ss(17,28,t);
+    h.inner.position.set(-ex,0,0);
+    h.flaps.forEach((f,i)=>{const on=t>15.2;f.visible=on;if(on){const u=ss(15.2,17,t);f.rotation.x=(f.position.y>D-0.1?-Math.PI/2:0)+f.userData.rx*u;f.rotation.z=f.userData.rz*u;}});
+  }
+  // chain from bow hawse to sea floor
+  const hawse=new THREE.Vector3(L/2-3,D-0.6,1.5);bow.inner.localToWorld(hawse);
+  const cp=chainGeo.attributes.position.array;cp.set([hawse.x,hawse.y,hawse.z,hawse.x+22,waveH(hawse.x+22,1.5)-0.2,1.5]);chainGeo.attributes.position.needsUpdate=true;
+  chain.visible=t<16.5;
+
+  // --- camera
+  const c=camAt(t);
+  let shake=0.12+0.9*Math.exp(-Math.pow((t-15.4)/0.35,2))+0.25*ss(12,15,t)*(1-ss(16,18,t));
+  const sh=[Math.sin(t*13.1)*0.6+Math.sin(t*7.3),Math.sin(t*11.7+1)*0.6+Math.sin(t*5.9),Math.sin(t*9.2+2)].map(v=>v*shake*0.25);
+  camera.position.set(c.P[0]+sh[0],c.P[1]+sh[1],c.P[2]+sh[2]);
+  const wl=waveH(camera.position.x,camera.position.z);
+  if(t>9&&t<23) camera.position.y=Math.max(camera.position.y, wl+1.1+0.3*Math.sin(t*2)); // bob at water level
+  camera.position.y=Math.max(camera.position.y,wl+0.9);
+  camera.fov=c.fov;camera.updateProjectionMatrix();
+  camera.lookAt(c.Tg[0],c.Tg[1]+mean*0.5,c.Tg[2]);
+
+  // --- water + foam
+  foamCenter.set(0,0); foamAmt=ss(16,24,t)*0.7;
+  updateWater(camera.position.x*0.5,camera.position.z*0.5);
+
+  // --- particles
+  updateRain(t);
+  const brk=new THREE.Vector3(BREAK,D*0.6,0); brk.y+=mean-DRAFT;
+  for(let i=0;i<SN;i++){const s=sprayInfo[i],a=t-s.t0;let x=0,y=-999,z=0;
+    if(a>0&&a<s.life){x=brk.x+s.vx*a;z=brk.z+s.vz*a;y=brk.y-sink*0.5+s.vy*a-4.9*a*a;
+      if(!s.burst){const ang=s.vz;x=brk.x+Math.cos(i)*6+s.vx*a;z=Math.sin(i)*6+s.vz*a;y=waveH(x,z)+s.vy*a-4.9*a*a;}
+      if(y<waveH(x,z)-0.5)y=-999;}
+    sprayPos[i*3]=x;sprayPos[i*3+1]=y;sprayPos[i*3+2]=z;}
+  sprayGeo.attributes.position.needsUpdate=true;
+  const bowTip=new THREE.Vector3(L/2-0.5,1.2,0);bow.inner.localToWorld(bowTip);
+  const slam=Math.max(0,-waveSlope(L/2))*1.4+0.3;
+  for(let i=0;i<BN;i++){const b=bowInfo[i];const cyc=1.6;const a=((t+b.ph)%cyc);let y=-999,x=0,z=0;
+    if(a<b.life&&t<20){x=bowTip.x+b.vx*a;z=bowTip.z+b.vz*a*slam;y=bowTip.y+b.vy*a*slam-4.9*a*a;if(y<waveH(x,z)-.3)y=-999;}
+    bowPos[i*3]=x;bowPos[i*3+1]=y;bowPos[i*3+2]=z;}
+  bowGeo.attributes.position.needsUpdate=true;
+  debris.forEach(m=>{const u=m.userData,a=t-u.t0;m.visible=a>0&&a<4;if(!m.visible)return;
+    const x=BREAK+u.vx*a,z=u.vz*a,y=brk.y+u.vy*a-4.9*a*a;m.position.set(x,Math.max(y,waveH(x,z)-0.3-Math.max(0,a-2)),z);m.rotation.set(u.ax*a,u.az*a*0.5,u.az*a);});
+  for(let i=0;i<FN;i++){const f=foamInfo[i],a=t-f.t0;let x=0,y=-999,z=0;
+    if(a>0){const r=f.r*(1-0.35*ss(23,30,t)*(1-f.r/40));const ang=f.a+a*f.s*(12/(r+4))*(1+ss(23,30,t));
+      const j=Math.sin(i*12.9898)*2.5;x=Math.cos(ang)*(r+j)*1.3;z=Math.sin(ang)*(r-j);y=waveH(x,z)+0.15;}
+    foamPos[i*3]=x;foamPos[i*3+1]=y;foamPos[i*3+2]=z;}
+  foamGeo.attributes.position.needsUpdate=true;
+  foamPts.material.opacity=0.45*ss(16.5,19,t);
+
+  // --- lightning
+  const fl=Math.max(0,1-Math.abs(t-5.6)/0.12)+Math.max(0,1-Math.abs(t-5.85)/0.08)*0.7+Math.max(0,1-Math.abs(t-19.4)/0.12)+Math.max(0,1-Math.abs(t-27.2)/0.1)*0.8;
+  skyMat.uniforms.flash.value=fl; flashLight.intensity=fl*2.2; hemi.intensity=0.85+fl*0.6;
+  scene.fog.color.copy(FOG).offsetHSL(0,0,fl*0.12);
+
+  renderer.render(scene,camera);
+
+  // --- UI
+  const si=SHOTS.findIndex(s=>t>=s[0]&&t<s[1]+(s[1]===30?1:0));
+  if(si!==lastShot&&si>=0){lastShot=si;capEl.innerHTML=`<b>${SHOTS[si][2]}</b><span>${SHOTS[si][3]}</span>`;marks.forEach((m,i)=>m.classList.toggle('on',i===si));}
+  const fr=Math.floor((t%1)*24);document.getElementById('hudtc').textContent=`00:${String(Math.floor(t)).padStart(2,'0')}:${String(fr).padStart(2,'0')}`;
+  document.getElementById('tc').textContent=t.toFixed(2).padStart(5,'0')+' s';
+  const broken=t>15.3; drawProfile(mean,pitch,broken);
+  const cond=broken?'FRACTURED':(midDefl>0.02?'HOGGING':midDefl<-0.02?'SAGGING':'NEUTRAL');
+  if(cond!==condEl.textContent){condEl.textContent=cond;condEl.style.color=cond==='HOGGING'||cond==='FRACTURED'?'var(--hog)':cond==='SAGGING'?'var(--sag)':'var(--muted)';}
+  deflEl.textContent=broken?'hull girder lost':`midship deflection ${(midDefl*100).toFixed(0)} cm`;
+}
+
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);resize();
+
+window.__renderAt=t=>{resize();render(t);};
+if(CAPTURE){document.body.classList.add('capture');render(0);return;}
+
+const scrub=document.getElementById('scrub'),playBtn=document.getElementById('play');
+let playing=!matchMedia('(prefers-reduced-motion: reduce)').matches, t0=performance.now(), tcur=0;
+playBtn.textContent=playing?'Pause':'Play';
+playBtn.onclick=()=>{playing=!playing;playBtn.textContent=playing?'Pause':'Play';t0=performance.now()-tcur*1000;};
+scrub.oninput=()=>{tcur=+scrub.value;t0=performance.now()-tcur*1000;if(!playing)render(tcur);};
+function loop(now){if(playing){tcur=((now-t0)/1000)%DUR;scrub.value=tcur;}render(tcur);requestAnimationFrame(loop);}
+render(0);requestAnimationFrame(loop);
+})();
+</script>
